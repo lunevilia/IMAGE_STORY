@@ -18,7 +18,6 @@ info_dict = {
 }
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('category/', include('category.urls', namespace='category')),
     path('board/', include('board.urls', namespace='board')),
     path('account/', include('account.urls', namespace='account')),
