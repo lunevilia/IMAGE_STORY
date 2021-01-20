@@ -57,6 +57,8 @@ File: Layout CSS
 #footer hr, #footer .borderedbox, #footer .linklist li{border-color:rgba(0,0,0,.1);}
 
 
+
+
 /* Media Queries
 --------------------------------------------------------------------------------------------------------------- */
 @-ms-viewport{width:device-width;}
