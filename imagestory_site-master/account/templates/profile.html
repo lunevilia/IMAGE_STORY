@@ -1,0 +1,259 @@
+{% load information_extras %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/imagestory.ico">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script type="text/javascript" src="{% static 'jquery.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"
+        integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
+        crossorigin="anonymous"></script>
+    <script>
+        $('#loginmodal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget) // Button that triggered the modal
+            var recipient = button.data('whatever') // Extract info from data-* attributes
+            // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this)
+            modal.find('.modal-title').text('New message to ' + recipient)
+            modal.find('.modal-body input').val(recipient)
+        })
+
+        function modify_profile() {
+            var r = confirm("수정된 정보로 적용하시겠습니까?");
+            if (r == true) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        function change_password() {
+            if (document.getElementById("n_password").value == document.getElementById("c_password").value) {
+                return true;
+            } else {
+                document.getElementById("check_password").innerHTML = "새로운 비밀번호와 비밀번호 확인이 일치하지 않습니다!"
+                return false;
+            }
+        }
+
+        function delete_profile() {
+            var r = prompt("정말로 아이디를 삭제하시겠습니까?\n삭제를 원하면 \"삭제\"를 입력하고 확인을 눌러주세요!\n(삭제하면 복구는 불가능🚫 합니다!)");
+            if (r == "삭제") {
+                location.href = "{% url 'account:del_user' %}";
+                alert("그 동안 감사했습니다!");
+            } else {
+                return;
+            }
+        }
+
+        function rematch(x) {
+            var nickname_check;
+            if (x == "nickname_id") {
+                nickname_check = false
+                $('#modify_check').css("display", "block");
+                $('#nickname_check').text("중복된 확인을 해주세요!");
+                $('#nickname_check').css("color", "red");
+                $('#modify_check').attr("disabled", false);
+                if (1 >= $("#nickname_id").val().length) {
+                    username_check = false
+                    $('#modify_check').attr("disabled", true);
+                    $('#nickname_check').text("닉네임를 2글자 이상으로 설정해주세요!");
+                    $('#nickname_check').css("color", "red");
+                }
+            }
+            $('#modify_submit').attr("disabled", true);
+            $('#overlap_id').text("중복확인을 해주세요!");
+        }
+
+        function modify_overlap(x, region) {
+            $.ajax({
+                // type을 설정합니다.
+                type: 'GET',
+                url: "{% url 'account:ajax' 'abc' 'region' %}".replace(/abc/, x.toString()).replace(/region/, region.toString()),
+                success: function (data) {
+                    // 만약 주는 녀석이 region에 따른 녀석이면 region에 따른 녀석만 변경
+                    if (data["check"]) {
+                        if (region == "nickname") {
+                            $('#nickname_check').text("중복된 닉네임이 존재합니다");
+                            $('#nickname_check').css("color", "red");
+                            nickname_check = false;
+                        }
+                    } else {
+                        if (region == "nickname") {
+                            $('#nickname_check').text("사용 가능한 닉네임 입니다");
+                            $('#nickname_check').css("color", "blue");
+                            nickname_check = true;
+                        }
+                    }
+                },
+                error: function () {
+                    if (region == "nickname") {
+                        $('#nickname_check').text("닉네임을 입력해주세요");
+                        nickname_check = false;
+                    }
+                },
+                complete: function () {
+                    if (nickname_check) {
+                        $('#modify_submit').attr("disabled", false);
+                    } else {
+                        $('#modify_submit').attr("disabled", true);
+                        $('#overlap_id').text("중복확인을 해주세요!");
+                    }
+                }
+            });
+        }
+
+    </script>
+
+    <style>
+        .btn-pink{
+            background-color:  rgb(255, 169, 169);
+            color: white;
+        }
+    </style>
+    {% include 'notice_ajax.html' %}
+    <style>
+        .svg-icon {
+            width: 1.5em;
+            height: 1.5em;
+            transition: 1s;
+        }
+    </style>
+    <title>이미지스토리</title>
+</head>
+
+<body>
+    <div class="container-fluid">
+        {% include 'navbar.html' %}
+        <!-- <h2 style="text-align: center;"><a href="/account/profile">{{user.profile.nickname}} 페이지</a></h2> -->
+
+        <h2 style="text-align: center; margin-bottom: 10px;"><a style = "color:black; font-size: 1.1ch; font-weight: bold;" href="/account/profile">회원정보</a></h2>
+
+        <!--card start-->
+        <div class="mb-3" style=" width:fit-content;margin:auto;padding: 20px;">
+
+            <div style="text-align: center; width:350px; background-color:  rgb(224, 224, 224);" class="card-header">
+                <div style="text-align: center;">
+                    <p style = "font-weight: bold; font-size: 2.5ch;">프로필 사진</h4>
+                    <p>{% if user.profile.image %}<img alt="{{user.profile.nickname}}"
+                            style="border: solid; border-radius: 50px; border-color: white" width="110"
+                            height="110" src="{{user.profile.image.url}}">
+                            {% else %}<img alt="이미지 없음"
+                            style="border: solid; border-radius: 100px; border-color: white" width="120"
+                            height="120" src = "{% static '이미지스토리/페이지_3/1x/글씨없는.png' %}">{% endif %}
+                    </p>
+                </div>
+                <table style="margin:auto;">
+                    <tr>
+                        <td><b>닉네임 &nbsp;&nbsp; </b></td>
+                        <td style="text-align: center;">{{user.profile.nickname}}</td>
+                    </tr>
+                    <tr>
+                        <td><b>이메일 &nbsp;&nbsp; </b></td>
+                        <td>{{user.profile.email}}</td>
+                    </tr>
+                </table>
+                <p></p>
+            </div>
+
+            <div class="card-body">
+
+                <div style="text-align: center;">
+                    <p><a href="{% url 'account:alert_board' %}" style = "color: rgb(158, 158, 158);">알림내용</a></p>
+                    <p><a href="{% url 'account:bookmark_board' %}" style = "color: rgb(158, 158, 158);">북마크</a></p>
+                    <p><a href="{% url 'account:my_board' %}" style = "color: rgb(158, 158, 158);">내 게시글 및 권한 관리</a></p>
+                    <p><a href="{% url 'account:auth_board' %}" style = "color: rgb(158, 158, 158);">권한 있는 게시글</a></p>
+                    <p><a style="color: black; font-weight: bold; cursor:pointer;" onclick="delete_profile()">회원탈퇴</a></p>
+                </div>
+            </div>
+            <div style="text-align: center;" class="">
+                <button type="button" class="btn btn-pink" data-toggle="modal" data-target="#exampleModal"
+                    data-whatever="@mdo">개인정보 수정</button>
+                <button type="button" class="btn btn-pink" data-toggle="modal" data-target="#passwordModal"
+                    data-whatever="@mdo">비밀번호 변경</button>
+            </div>
+            {% if messages %}
+            <div style="text-align: center;">
+                {% for message in messages %}
+                {{ message }}
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- 회원정보 수정 modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">정보 수정</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form onSubmit="return modify_profile()" action="{% url 'account:profile' %}"
+                            enctype="multipart/form-data" method="post">
+                            {% csrf_token %}
+                            {{profile_form.as_p}}
+                            <span id="nickname_check"></span>
+                            <input style="display: none;" id="modify_check" type="button"
+                                onclick="modify_overlap($('#nickname_id').val(), 'nickname');" value="닉네임 중복확인">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                        <button id="modify_submit" type="submit" class="btn btn-pink">수정</button>
+                    </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- 비밀번호 변경 modal -->
+        <div class="modal fade" id="passwordModal" tabindex="-1" role="dialog" aria-labelledby="passwordModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="passwordModalLabel">비밀번호변경</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form onSubmit="return change_password()" action="{% url 'account:mod_password' %}" method="POST">
+                        {% csrf_token %}
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="n_password" class="col-form-label">새로운 비밀번호</label>
+                                <input name="n_password" type="password" class="form-control" id="n_password"
+                                    minlength="8" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="c_password" class="col-form-label">비밀번호 확인</label>
+                                <input name="c_password" type="password" class="form-control" id="c_password"
+                                    minlength="8" required>
+                            </div>
+                            <div id="check_password" style="text-align: center;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">취소</button>
+                            <input type="submit" class="btn btn-pink" value="변경하기">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

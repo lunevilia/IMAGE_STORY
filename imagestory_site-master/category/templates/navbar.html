@@ -1,0 +1,175 @@
+{% load information_extras %}
+{% load static %}
+
+
+
+<style>
+  *{
+    font-family: "굴림", Gulim;
+  }
+  /* header */
+  #header {
+    height: 70px;
+    transition: all 0.5s;
+    transition: all 0.5s;
+    padding: 10px 0;
+    background: #fff;
+    z-index: 997;
+  }
+
+  #header.header-scrolled {
+    box-shadow: 0px 0px 20px 0px rgba(0, 0, 0, 0.1);
+  }
+
+  #header .logo h1 {
+    font-size: 28px;
+    margin: 0;
+    padding: 10px 0;
+    line-height: 1;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+
+  #header .logo h1 a,
+  #header .logo h1 a:hover {
+    color: #1c5c93;
+    text-decoration: none;
+  }
+
+  #header .logo img {
+    padding: 0;
+    margin: 0;
+    max-height: 40px;
+  }
+
+  .dropdown-item{
+    padding: 0 0 0 5px;
+  }
+  .btn-pink{
+            background-color:  rgb(255, 169, 169);
+            color: white;
+  }
+  .fonti{
+    font-size: 1.5ch;
+  }
+  .boli{
+    font-weight: bold;
+    margin-left: 10px;
+  }
+  .hr-line{
+      margin-left: 10px; 
+      float: left; 
+      width: 85%;
+      height: 0.75px;
+      line-height: 300px;
+      border: none;
+      background-color:#d1d0d0; 
+      margin-top:  5px;
+      margin-bottom: 5px;
+    }
+  .navbar-images{
+    background-image: url("{% static '이미지스토리/페이지_1/1x/메뉴바.png' %}");
+    background-size: cover;
+    width:35px;
+    height:25px;
+  }
+  .navbar-toggler{
+    border: 0;
+  }
+  .cats{
+    margin-top: -5px;
+  }
+
+
+  @media all and (min-width:991px) and (max-width:3000px) {
+    whys{
+      text-align: right; 
+      float:right; 
+      width: 80%;
+    }
+    .fonti{
+    width: 95px;
+  }
+
+  }
+  @media all and (min-width:768px) and (max-width:990px) {
+    whys{
+      text-align: right; 
+      float:right; 
+      width: 70%;
+    }
+
+  }
+  @media all and (min-width:300px) and (max-width:767px) {
+    whys{
+      text-align: right; 
+      float:right; 
+      width: 50%;
+    }
+  }
+  @media all and (min-width:0px) and (max-width:299px) {
+    whys{
+      text-align: right; 
+      float:right; 
+      width: 50%;
+    }
+  }
+
+
+  
+</style>
+
+
+
+
+<nav class="navbar navbar-expand-lg navbar-light" style="margin-bottom: -23px;">
+
+  <div style= "width:65%"><a class="navbar-brand" href="/"><img height = "50px; width=300px" src="{% static 'mainlogo.png' %}"></a></div>
+      
+
+    <div class = "whys" ><a href = "{% url 'tutorial:tutorial_list' %}"><img style = "height: 30px; width: 30px;" src = "{% static '이미지스토리/페이지_1/1x/궁금.png' %}"></a></div>
+
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01"
+    aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+    
+    <div class = "navbar-images"></div>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+      <li class="nav-item dropdown">
+        <a class="boli nav-link" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          카테고리 <img style = "width:20px; height: 10px;" src = "{% static '이미지스토리/페이지_2/자산13.png' %}">
+        </a>
+        <div class="dropdown-menu cats" aria-labelledby="navbarDropdownMenuLink" style="border: 0; background-color: rgb(255, 255, 255)">
+          <hr class = "hr-line">
+          {% for category in user|category_get %}
+          <a class="dropdown-item boli" href="{% url 'board:main' category.board_name %}">{{category.showing_name}}</a>
+            
+            <hr class = "hr-line">
+            
+          {% endfor %}
+        </div>
+      </li>
+    </ul>
+    <ul class="navbar-nav mr-sm-0 mt-lg-0">
+      {% if user.is_authenticated %}
+      <a style="margin:6px 2px; background-color:rgb(127, 127, 127); color: white" class="btn btn-dark boli fonti" href="{% url 'account:profile' %}">마이페이지</a>
+      <a style="margin:6px 2px;" class="btn btn-pink boli fonti" href="{% url 'account:logout' %}?next={{request.path}}">로그아웃</a>
+      <a style="margin:10px" class="dropdown boli">
+        <span style="cursor: pointer;" id="notice" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"
+          onclick="notice_ajax()">{{user|alert_checking:user.profile.nickname|safe}}</span>
+        <div style="padding:20px;" class="dropdown-menu dropdown-menu-right alert-warning" aria-labelledby="notice"
+          id="notice_result"></div>
+      </a>
+      {% else %}
+      <a class="btn btn-pink boli fonti" style = "margin: 6px 2px;" href="{% url 'account:login' %}?next={{request.path}}">로그인</a>
+      <a class="btn boli fonti" style = "margin: 6px 2px; background-color:rgb(127, 127, 127); color: white;" href="{% url 'account:signup' %}?next={{request.path}}">회원가입</a>
+      {% endif %}
+      <br>
+    </ul>
+  </div>
+</nav>
+<hr>

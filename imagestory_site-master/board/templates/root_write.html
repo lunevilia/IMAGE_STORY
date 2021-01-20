@@ -1,0 +1,303 @@
+{% load information_extras %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지스토리</title>
+    <link rel="icon" href="/static/imagestory.ico">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script type="text/javascript" src="{% static 'jquery.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <style>
+        .svg-icon {
+            width: 1.5em;
+            height: 1.5em;
+            transition: 1s;
+        }
+        .btn-pinks{
+            background-color:  rgb(255, 169, 169);
+            color: white;
+            width: 110px;
+            margin-bottom: 20px;
+        }
+        .btn-grays{
+            background-color:rgb(127, 127, 127); 
+            color: white;
+        }
+        .to-days{
+            text-align:left; 
+            width:100%; 
+            font-size: 1.4ch; 
+            margin-left:30px; 
+            margin-bottom:-10px;
+        }
+        .title-css{
+            padding: 1px; 
+            width: 350px;
+            background-color:rgb(206, 206, 206); 
+            margin: 0 auto; 
+            border-radius: 0.4em;
+        }
+        .mytitle{
+            border: solid 2px rgb(206, 206, 206);
+            border-radius: 0.4em;
+            width: 270px;
+            padding: 5px 0 5px 10px;
+            font-size: 1.5ch;
+            font-weight: bold;
+            color: rgb(131, 131, 131); 
+        }
+        .mybody{
+            border: solid 3.5px rgb(206, 206, 206);
+            border-radius: 0.4em;
+            padding: 20px 0 0 20px;
+            font-weight: bold;
+            color: rgb(131, 131, 131); 
+            width: 350px;
+        }
+        .myimage{
+            display:block;
+            margin:10px auto;
+        }
+        input[type="file"] {
+            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip:rect(0,0,0,0); border: 0;
+        }
+        .myscure{
+            height:38px;
+            padding: 0 10px;
+
+            background: url("{% static '이미지스토리/페이지_6/1x/위아래.PNG' %}") no-repeat 120% 50%;
+            background-size: 50%;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+
+            border: solid 3.5px rgb(206, 206, 206);
+            border-radius: 0.4em;
+            font-weight: bold;
+        }
+    </style>
+    <style>
+        body {margin: 10px;}
+        .where {
+        display: block;
+        margin: 25px 15px;
+        font-size: 11px;
+        color: #000;
+        text-decoration: none;
+        font-family: verdana;
+        font-style: italic;
+        } 
+
+        .filebox input[type="file"] {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip:rect(0,0,0,0);
+            border: 0;
+        }
+
+        .filebox label {
+            width:115px;
+            color: white;
+            padding: 1px 6px;
+            font-size: 1.5ch;
+            font-weight: bold;
+            vertical-align: middle;
+            background-color:   rgb(158, 158, 158);
+            cursor: pointer;
+            border: 1px solid #ebebeb;
+            border-bottom-color: #e2e2e2;
+            border-radius: .5em;
+            margin-right: 15px;
+        }
+
+        /* named upload */
+        .filebox .upload-name {
+            display: inline-block;
+            font-size: 1.6ch;
+            font-family: inherit;
+            font-weight: bold;
+            line-height: normal;
+            vertical-align: middle;
+            background-color: white;
+            border: white;
+            border-radius: .25em;
+            -webkit-appearance: none; /* 네이티브 외형 감추기 */
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        /* imaged preview */
+        .filebox .upload-display {
+            margin-bottom: 5px;
+        }
+
+        @media(min-width: 768px) {
+            .filebox .upload-display {
+                display: inline-block;
+                margin-right: 5px;
+                margin-bottom: 0;
+            }
+        }
+
+        .filebox .upload-thumb-wrap {
+            display: inline-block;
+            width: 54px;
+            padding: 2px;
+            vertical-align: middle;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #fff;
+        }
+
+        .filebox .upload-display img {
+            display: block;
+            max-width: 100%;
+            width: 100%;
+            height: auto;
+        }
+
+
+
+    </style>
+
+</head>
+<!-- notice ajax 스크립트 추가 -->
+{% include "notice_ajax.html" %}
+<body>
+    {% include 'navbar.html' %}
+<div class="container-fluid" style="text-align: center;">
+    <p style = "width:100%; text-align: right;">       
+        <span style="cursor: pointer; margin-right: 10px;"aria-haspopup="true" aria-expanded="false"
+            onclick="notice_ajax()">{{user|alert_checking:user.profile.nickname|safe}}</span>
+
+        <a class="btn btn-grays" href="/board/{{board_name}}">뒤로가기</a>
+    </p>
+    <p class = "to-days" id = "now_date">오늘 날짜</p>
+    <hr>
+    <form enctype="multipart/form-data" id='information_data' action='{% url "board:root_write" board_name %}' method='post' name='information_data'>
+        {% csrf_token %}
+        <div style = "text-align: center;">
+            <div class = "title-css">
+                <span style = "margin:0 18px; font-weight: bold;"> 제목 </span>
+                {{boardform.title}}
+            </div>
+        </div>
+
+        <div style = "text-align: center; margin: 30px auto;">
+            <p style = "font-weight: bold; margin-bottom: 8px;"> 내용 </p>
+            {{boardform.information}}
+        </div>
+        <hr>
+        
+        <div class="filebox preview-image" style = "margin: 30px auto 0 30px;">
+            <label for="input-file">이미지<br>파일 선택</label> 
+            <input class="upload-name" value="선택된 파일 없음" disabled="disabled" > 
+
+            
+            {{boardform.image}}
+        </div>
+        <p style = "color: rgb(255, 146, 146); font-weight: bold; font-size: 1.7ch">1MB 이상 이미지는 올릴 수 없습니다.</p>
+
+
+        <div style = "margin: 20px auto 30px auto;">
+            <span style = "font-weight: bold;">공개 범위 </span>
+            {{boardform.secure}}
+        </div>
+        
+        <input class="btn btn-pinks" type='submit' value='글쓰기'/>
+        <!-- 나중에 이미지 미리보여주기 저장 -->
+    </form>
+        
+    <script> //이미지
+        $(document).ready(function(){
+        var fileTarget = $('.filebox .upload-hidden');
+
+            fileTarget.on('change', function(){
+                if(window.FileReader){
+                    // 파일명 추출
+                    var filename = $(this)[0].files[0].name;
+                } 
+
+                else {
+                    // Old IE 파일명 추출
+                    var filename = $(this).val().split('/').pop().split('\\').pop();
+                };
+
+                $(this).siblings('.upload-name').val(filename);
+            });
+
+            //preview image 
+            var imgTarget = $('.preview-image .upload-hidden');
+
+            imgTarget.on('change', function(){
+                var parent = $(this).parent();
+                parent.children('.upload-display').remove();
+
+                if(window.FileReader){
+                    //image 파일만
+                    if (!$(this)[0].files[0].type.match(/image\//)) return;
+                    
+                    var reader = new FileReader();
+                    reader.onload = function(e){
+                        var src = e.target.result;
+                        parent.prepend('<div class="upload-display"><div class="upload-thumb-wrap"><img src="'+src+'" class="upload-thumb"></div></div>');
+                    }
+                    reader.readAsDataURL($(this)[0].files[0]);
+                }
+
+                else {
+                    $(this)[0].select();
+                    $(this)[0].blur();
+                    var imgSrc = document.selection.createRange().text;
+                    parent.prepend('<div class="upload-display"><div class="upload-thumb-wrap"><img class="upload-thumb"></div></div>');
+
+                    var img = $(this).siblings('.upload-display').find('img');
+                    img[0].style.filter = "progid:DXImageTransform.Microsoft.AlphaImageLoader(enable='true',sizingMethod='scale',src=\""+imgSrc+"\")";        
+                }
+            });
+        });
+
+    </script>
+
+    <script> // 현재 날짜 출력
+        let today = new Date();   
+
+        let year = today.getFullYear(); // 년도
+        let month = today.getMonth() + 1;  // 월
+        let date = today.getDate();  // 날짜
+        let day = today.getDay();  // 요일
+
+        var days = "none";
+        
+        switch(day){
+            case 1:
+                days = "월"; break;
+            case 2:
+                days = "화"; break;
+            case 3:
+                days = "수"; break;
+            case 4:
+                days = "목"; break;
+            case 5:
+                days = "금"; break;
+            case 6:
+                days = "토"; break; 
+            case 6:
+                days = "일"; break; 
+        }
+
+        var str1 = document.getElementById("now_date");
+		str1.innerHTML = year + " . " + month + " . " + date + "(" + days + ")";
+    </script>
+
+</div>
+</body>
+</html>

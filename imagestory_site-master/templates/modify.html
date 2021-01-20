@@ -1,0 +1,375 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지스토리</title>
+    <link rel="icon" href="/static/imagestory.ico">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <!-- <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script> -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'jquery.imagemapster.js' %}"></script>
+    
+    
+    {% if root_board.image %}
+    <style>
+        
+        #can_img{
+            max-width: 100%;
+        }
+        @media (min-width:769px){
+            #can_img{
+                max-width: 600px;
+            }
+        }
+
+        @media (min-width:769px) and (max-width:1800px){
+            #can_img{
+                max-width: 600px;
+            }
+        }
+
+        @media (min-width:1800px){
+            #can_img{
+                max-width: 730px;
+            }
+        }
+        
+        
+    </style>
+
+    <script type="text/javascript">
+        
+
+        var offsetX, offsetY; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+
+        var canvas, ctx, flag = false,
+            startX = 0,
+            currX = 0,
+            startY = 0,
+            currY = 0,
+            lastX = 0,
+            lastY = 0,
+            scaleWidth = 0,
+            scaleHeight = 0,
+            _flag = true;
+    
+        var select_color = "yellow",
+            select_width = 5;
+
+        var image_change = false;
+
+        function reOffset(){ //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+            var BB=document.getElementById('can').getBoundingClientRect();
+            offsetX=BB.left;
+            offsetY=BB.top;
+        }
+
+        window.onscroll=function(e){ reOffset(); } //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+        window.onresize=function(e){ reOffset(); } //크기 조정시
+        
+        // 켄버스 기능 설정
+        function init() {
+            
+            var img = document.getElementById("can_img");
+            //원래 있던 이미지와 바꿔진 이미지의 비율을 알아보자
+
+            var real_img_size = new Image(); //이미지 크기가 동적이여도 비율로 크기 조절하기 위해서 설정
+            real_img_size.src = '{{root_board.image.url}}'; //이미지 크기가 동적이여도 비율로 크기 조절하기 위해서 설정
+
+            scaleWidth = real_img_size.width / img.clientWidth; //이미지 크기가 동적이여도 비율로 크기 조절하기 위해서 설정
+            scaleHeight = real_img_size.height / img.clientHeight; //이미지 크기가 동적이여도 비율로 크기 조절하기 위해서 설정
+
+            $('img').mapster({
+                stroke: true, 
+                fillOpacity: 0.3,
+                strokeWidth: 6,
+            });
+
+            $('#mapster_wrap_0').css("margin", "auto"); //가운데 정렬
+            $('area').mapster('select');
+
+            canvas = document.getElementById('can');
+            ctx = canvas.getContext("2d");
+
+            canvas.width = img.clientWidth; //바뀌어진 width를 기준으로 canvas도 크기를 조정
+            canvas.height = img.clientHeight;
+    
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height); //이미지 초기화 : 크기를 조정한 기준으로 이미지를 초기화
+    
+            w = canvas.width;
+            h = canvas.height;
+
+            reOffset(); //추가하기를 누르면 canvas의 offset이 초기화
+
+            ctx.beginPath();
+            ctx.rect(({{get_board.cord_sx}}/scaleWidth), ({{get_board.cord_sy}}/scaleHeight), ({{get_board.cord_lx}}/scaleWidth) - ({{get_board.cord_sx}}/scaleWidth), ({{get_board.cord_ly}}/scaleHeight) - ({{get_board.cord_sy}}/scaleHeight)); //이미지 그릴때는 좀 다름..
+            ctx.strokeStyle = select_color;
+            ctx.lineWidth = select_width;
+            ctx.stroke();
+            ctx.closePath();
+
+            canvas.addEventListener("mousemove", function (e) {
+                findxy('move', e)
+            }, false);
+            canvas.addEventListener("mousedown", function (e) {
+                findxy('down', e)
+            }, false);
+            canvas.addEventListener("mouseup", function (e) {
+                findxy('up', e)
+            }, false);
+            canvas.addEventListener("mouseout", function (e) {
+                findxy('out', e)
+            }, false);
+            canvas.addEventListener("touchmove", function (e) {
+                findxy('touchmove', e)
+            }, false);
+            canvas.addEventListener("touchstart", function (e) {
+                findxy('touchdown', e)
+            }, false);
+            canvas.addEventListener("touchend", function (e) {
+                findxy('touchup', e)
+            }, false);
+            
+            
+        }
+        
+        
+        function draw() {
+            ctx.beginPath();
+            ctx.rect(startX, startY, lastX - startX, lastY - startY); //이미지 그릴때는 좀 다름..
+            ctx.strokeStyle = select_color;
+            ctx.lineWidth = select_width;
+            ctx.stroke();
+            ctx.closePath();
+
+            var x1 = document.getElementById("id_cord_sx");
+            var y1 = document.getElementById("id_cord_sy");
+            var x2 = document.getElementById("id_cord_lx");
+            var y2 = document.getElementById("id_cord_ly");
+    
+            x1.value = parseInt(startX*scaleWidth); //image map을 저장할 좌표를 만들기
+            y1.value = parseInt(startY*scaleHeight); //이미지 크기가 동적이여도 비율로 크기 조절하기 위해서 설정
+            x2.value = parseInt(lastX*scaleWidth);
+            y2.value = parseInt(lastY*scaleHeight);
+        }
+    
+        function change_cord(){ //때는 순간 좌표 위치만 바꾸기
+            var temp;
+            if (startX < lastX) // 좌표 image map으로 좌표 바꾸기
+            {
+                if (startY > lastY) //왼쪽아래 -> 오른쪽위
+                {
+                    temp = startY;
+                    startY = lastY;
+                    lastY = temp;
+                }
+            }
+            else if (startX > lastX) //오른쪽위 -> 왼쪽아래
+            {
+                temp = startX;
+                startX = lastX;
+                lastX = temp;
+    
+                if (startY > lastY) //오른쪽아래 -> 왼쪽위
+                {
+                    temp = startY;
+                    startY = lastY;
+                    lastY = temp;	
+                }
+            }
+
+            document.getElementById("id_cord_sx").value = parseInt(startX*scaleWidth); //image map을 저장할 좌표를 만들기
+            document.getElementById("id_cord_sy").value = parseInt(startY*scaleHeight); //이미지 크기가 동적이여도 비율로 크기 조절하기 위해서 설정
+            document.getElementById("id_cord_lx").value = parseInt(lastX*scaleWidth); 
+            document.getElementById("id_cord_ly").value = parseInt(lastY*scaleHeight);
+
+            if (startX == lastX && startY == lastY){
+                document.getElementById("id_cord_sx").value = "";
+                document.getElementById("id_cord_sy").value = "";
+                document.getElementById("id_cord_lx").value = "";
+                document.getElementById("id_cord_ly").value = "";
+            }
+
+        }
+        
+        function findxy(res, e) {
+            var img = document.getElementById("can_img");
+            if (res == 'down') {
+                if(_flag){
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // 선택하는 것처럼 보이기 위해서 그림 다시 초기화
+                }
+                currX = e.clientX - offsetX; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                currY = e.clientY - offsetY; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                if(_flag){ //맨처음 눌린 위치 순간 저장하기 위해서 조건문!
+                    startX = currX; // 맨처음 눌린 위치
+                    startY = currY; // 맨처음 눌린 위치
+                    _flag = false;
+                }
+                flag = true; //눌린 상태인지 확인
+
+            }
+    
+            if (res == 'up') {
+                lastX = currX // 땐위치
+                lastY = currY // 땐위치
+                flag = false; //눌린 상태인지 확인
+                _flag = true; //밖을 나갔을 때, 맨처음 눌린 위치를 다시 저장할 수 있도록 true로
+                //  draw(); //그리기
+                change_cord(); // 때는 순간 그림을 그린 좌표를 imagemap에 맞게 좌표 바꾸기
+                currX = false; //밖을 나가서 전부 초기화
+                currY = false; //밖을 나가서 전부 초기화
+                startX = false; //밖을 나가서 전부 초기화
+                startY = false; //밖을 나가서 전부 초기화
+                lastX = false; //밖을 나가서 전부 초기화
+                lastY= false; //밖을 나가서 전부 초기화
+            }
+    
+            if (res == 'move') {
+                if (flag) { //눌린 상태인지 확인
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    currX = e.clientX - offsetX; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                    currY = e.clientY - offsetY; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                    lastX = currX // 땐위치
+                    lastY = currY // 땐위치
+                    draw();
+                }
+            }
+
+            if (res == 'touchdown') {
+                if(_flag){
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // 선택하는 것처럼 보이기 위해서 그림 다시 초기화
+                }
+                currX = (e.targetTouches[0].clientX) - offsetX; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                currY = (e.targetTouches[0].clientY) - offsetY; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                if(_flag){ //맨처음 눌린 위치 순간 저장하기 위해서 조건문!
+                    startX = currX; // 맨처음 눌린 위치
+                    startY = currY; // 맨처음 눌린 위치
+                    _flag = false;
+                }
+                flag = true; //눌린 상태인지 확인
+            }
+    
+            if (res == 'touchup') {
+                lastX = currX // 땐위치
+                lastY = currY // 땐위치
+                flag = false; //눌린 상태인지 확인
+                _flag = true; //밖을 나갔을 때, 맨처음 눌린 위치를 다시 저장할 수 있도록 true로
+                //  draw(); //그리기
+                change_cord(); // 때는 순간 그림을 그린 좌표를 imagemap에 맞게 좌표 바꾸기
+                currX = false; //밖을 나가서 전부 초기화
+                currY = false; //밖을 나가서 전부 초기화
+                startX = false; //밖을 나가서 전부 초기화
+                startY = false; //밖을 나가서 전부 초기화
+                lastX = false; //밖을 나가서 전부 초기화
+                lastY= false; //밖을 나가서 전부 초기화
+            }
+    
+            if (res == 'touchmove') {
+                if (flag) { //눌린 상태인지 확인
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    currX = (e.targetTouches[0].clientX) - offsetX; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                    currY = (e.targetTouches[0].clientY) - offsetY; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                    lastX = currX // 땐위치
+                    lastY = currY // 땐위치
+                    draw();
+                }
+            }
+            
+        }
+    
+        function save_data(){
+            var a =	confirm("해당 영역의 정보를 저장하시겠습니까?")
+            var x1 = document.getElementById("id_cord_sx").value; //image map을 저장할 좌표를 만들기
+            var y1 = document.getElementById("id_cord_sy").value;
+            var x2 = document.getElementById("id_cord_lx").value;
+            var y2 = document.getElementById("id_cord_ly").value;
+            if(a){
+                if (x1 == "" || y1 == "" || x2 == "" || y2 == "")
+                {	
+                    alert("사진 구역을 클릭 후 드래그하여 영역을 설정해주세요!");
+                    return false;
+                }
+                document.information_data.submit();
+
+            } else {
+                return false;
+            }
+
+        }
+
+        var before_x1; //영역 수정하기 했을 경우 전으로 돌아가기 위해서 전의 것을 저장
+        var before_y1; //영역 수정하기 했을 경우 전으로 돌아가기 위해서 전의 것을 저장
+        var before_x2; //영역 수정하기 했을 경우 전으로 돌아가기 위해서 전의 것을 저장
+        var before_y2; //영역 수정하기 했을 경우 전으로 돌아가기 위해서 전의 것을 저장
+
+        function use_canvas(){ // 설정하기 누르면 캔버스 사용가능
+            var img = document.getElementById("can_img");
+            
+            if (document.getElementById('modify').value == "영역수정하기"){
+                before_x1 = document.getElementById("id_cord_sx").value; //image map을 저장할 좌표를 만들기
+                before_y1 = document.getElementById("id_cord_sy").value;
+                before_x2 = document.getElementById("id_cord_lx").value;
+                before_y2 = document.getElementById("id_cord_ly").value;
+                document.getElementById('can').style.display='block';
+                $('#mapster_wrap_0').css("display", "none");
+                document.getElementById('modify').value ='영역수정취소';
+                reOffset(); //추가하기를 누르면 canvas의 offset이 초기화
+            } else {
+                document.getElementById('can').style.display='none';
+                $('#mapster_wrap_0').css("display", "block");
+                document.getElementById('modify').value ='영역수정하기';
+                document.getElementById("id_cord_sx").value = before_x1;
+                document.getElementById("id_cord_sy").value = before_y1;
+                document.getElementById("id_cord_lx").value = before_x2;
+                document.getElementById("id_cord_ly").value = before_y2;
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                ctx.beginPath();
+                ctx.rect(({{get_board.cord_sx}}/scaleWidth), ({{get_board.cord_sy}}/scaleHeight), ({{get_board.cord_lx}}/scaleWidth) - ({{get_board.cord_sx}}/scaleWidth), ({{get_board.cord_ly}}/scaleHeight) - ({{get_board.cord_sy}}/scaleHeight)); //이미지 그릴때는 좀 다름..
+                ctx.strokeStyle = select_color;
+                ctx.lineWidth = select_width;
+                ctx.stroke();
+                ctx.closePath();
+            }
+        }
+        
+       </script>
+       {% endif %}
+</head>
+<body onload="init();">
+    <p></p>
+<div style="text-align: center;">
+    <p>
+    <a class="btn btn-info" href="{% url 'board:detail' root_board.category root_board.id %}">뒤로가기</a>
+    </p>
+    <div>
+        <h1>수정하기</h1>
+    <!-- 수정하기 -->
+        <form enctype="multipart/form-data" style='display:block;' id='information_data' action="{% url 'board:mod_detail' get_board.category get_board.id %}" method='post' name='information_data'>
+            {% csrf_token %}
+            <div style="display: none;">{{boardform.as_p}}</div>
+
+            <!-- 영역 수정하기 -->
+            <input class="btn btn-warning" id='modify' type='button' value='영역수정하기' onclick="use_canvas();"/>
+            <!-- 수정하기 적용 -->
+            <input class="btn btn-success" type='button' value='적용' onclick="save_data();">
+        </form>
+    
+    </div>
+    <br>
+    <div style="text-align: center;">
+        <img style="margin:auto;" class="map" draggable="false" id="can_img" src="{{root_board.image.url}}" usemap="#map"></img>
+        <map name="map">
+            <area shape="rect" class="{fillColor:'00ffff'}" coords="{{get_board.cord_sx}},{{get_board.cord_sy}},{{get_board.cord_lx}},{{get_board.cord_ly}}">
+        </map>
+        <canvas id="can" style="display:none;margin:auto;border:2px solid;touch-action: none;"></canvas>
+    </div>
+
+</div>
+<br>
+</body>
+
+</html>

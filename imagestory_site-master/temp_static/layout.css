@@ -1,0 +1,83 @@
+@charset "utf-8";
+/*
+Template Name: Miresa
+Author: <a href="https://www.os-templates.com/">OS Templates</a>
+Author URI: https://www.os-templates.com/
+Licence: Free to use under our free template licence terms
+Licence URI: https://www.os-templates.com/template-terms
+File: Layout CSS
+*/
+
+@import url("framework.css");
+
+
+/* Page Intro
+--------------------------------------------------------------------------------------------------------------- */
+#pageintro{padding:180px 0;}
+
+#pageintro article{display:block; max-width:75%; margin:0 auto; text-align:center;}
+#pageintro .heading{margin-bottom:20px; font-size:3rem;}
+#pageintro p:first-of-type{margin:0 0 20px 0; text-transform:uppercase; font-size:1.2rem; letter-spacing:5px;}
+#pageintro footer{margin-top:50px;}
+
+
+/* Footer
+--------------------------------------------------------------------------------------------------------------- */
+#footer{padding:80px 0;}
+
+#footer .heading{margin-bottom:50px; font-size:1.2rem;}
+
+#footer .linklist li{display:block; margin-bottom:15px; padding:0 0 15px 0; border-bottom:1px solid;}
+#footer .linklist li:last-child{margin:0; padding:0; border:none;}
+#footer .linklist li::before, #footer .linklist li::after{display:table; content:"";}
+#footer .linklist li, #footer .linklist li::after{clear:both;}
+
+#footer .contact{}
+#footer .contact.linklist li, #footer .contact.linklist li:last-child{position:relative; padding-left:40px;}
+#footer .contact li *{margin:0; padding:0; line-height:1.6;}
+#footer .contact li i{display:block; position:absolute; top:0; left:0; width:30px; font-size:16px; text-align:center;}
+
+
+--------------------------------------------------------------------------------------------------------------- */
+*, *::before, *::after{transition:all .3s ease-in-out;}
+
+
+/* Colours
+--------------------------------------------------------------------------------------------------------------- */
+.overlay{color:#FFFFFF; background-color:inherit;}
+.overlay::after{color:inherit; background-color:rgba(0,0,0,.8);}
+.overlay.light::after{background-color:rgba(0,0,0,.55);}
+
+
+/* Page Intro */
+#pageintro{color:#FFFFFF;}
+
+
+/* Footer */
+#footer hr, #footer .borderedbox, #footer .linklist li{border-color:rgba(0,0,0,.1);}
+
+
+/* Media Queries
+--------------------------------------------------------------------------------------------------------------- */
+@-ms-viewport{width:device-width;}
+
+
+/* Max Wrapper Width - Laptop, Desktop etc.
+--------------------------------------------------------------------------------------------------------------- */
+@media screen and (min-width:978px){
+	.hoc{max-width:978px;}
+}
+
+
+/* Mobile Devices
+--------------------------------------------------------------------------------------------------------------- */
+@media screen and (max-width:900px){
+	.hoc{max-width:90%;}
+	#footer{}
+}
+
+
+@media screen and (max-width:750px){
+	#pageintro article{max-width:none; text-align:left;}
+	#pageintro .heading{font-size:2rem;}
+}

@@ -1,0 +1,45 @@
+{% load information_extras %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지스토리</title>
+    <link rel="icon" href="/static/imagestory.ico">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script type="text/javascript" src="{% static 'jquery.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <style>
+        .svg-icon {
+            width: 1.5em;
+            height: 1.5em;
+            transition: 1s;
+        }
+    </style>
+    {% include 'notice_ajax.html' %}
+</head>
+<body>
+    <div class="container-fluid">
+        {% include 'navbar.html' %}
+        <h2 style="text-align: center;"><a href="/account/profile">{{user.profile.nickname}} 페이지</a></h2>
+    <h4 style="text-align: center;">권한 있는 게시글</h4>
+    <hr>
+        {% for authboard in authboards %}
+        <div style="text-align:center;">
+        {% if authboard.secure == 'private' %}<span class="badge badge-pill badge-dark">비공개글</span>{% endif %}{% if authboard.group.count %}🤼협동{% endif %}
+        <p><h3>{{authboard.short_title}}</h3><a href="/board/detail/{{authboard.category.board_name}}/{{authboard.id}}">게시글 보러가기</a></p>
+        <p>
+            <em>{{authboard.created_at|date:"Y-m-d H:i"}}</em>
+            작성자 : {{authboard.author.nickname}}
+        </p>
+        <div>
+            {% if authboard.group.count %}권한 : {% for i in authboard.group.all %}<span class="badge badge-primary">{{i.nickname}}</span> {% endfor %}{% endif %}
+        </div>
+        </div>
+        <hr>
+        {% endfor %}
+    </div>
+</body>
+</html>

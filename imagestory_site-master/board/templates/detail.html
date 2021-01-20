@@ -1,0 +1,929 @@
+{% load information_extras %}
+{% load post_extras %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지스토리</title>
+    <link rel="icon" href="/static/imagestory.ico">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script type="text/javascript" src="{% static 'jquery.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="{% static 'jquery.imagemapster.js' %}"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script data-ad-client="ca-pub-1987584597836949" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <style>
+    .svg-icon {
+        width: 1.5em;
+        height: 1.5em;
+        transition: 1s;
+    }
+
+    .information{
+            word-break:break-word;
+    }
+
+    .btn-gray{
+        background-color: rgb(158, 158, 158);
+        color: white;
+    }
+    .btn-togray{
+        background-color: rgb(127, 127, 127);
+        color: white;
+        width: 140px;
+    }
+
+    .btn-pinks{
+        background-color: rgb(250, 144, 144);
+        color: white;
+        width: 120px;
+    }
+
+    .view-area{
+        display: none;
+        cursor: pointer;
+        width: 320px;
+        background-color:rgb(224, 224, 224);
+        margin: 10px auto;
+        border-radius: 0.4em;
+        font-size:1.6ch;
+    }
+    .non-view{
+        display: block;
+        cursor: pointer;
+        width: 320px;
+        background-color:rgb(224, 224, 224);
+        margin: 10px auto;
+        border-radius: 0.4em;
+        font-size:1.6ch;
+    }
+    .fonta{
+        font-size: 1.65ch;
+    }
+    h1.a{
+        font-size: 2.5ch;
+        text-align: center;
+    }
+    h1.a:after {
+        content: "";
+        display: block;
+        width: 330px;
+        border-bottom: 43.3px solid #d6d6d6;
+        margin: 10px auto 0 auto;
+    }
+    div.a{
+        width: 330px;
+        font-weight: 500;
+        text-align: center;
+        margin: -50px auto 0 auto;
+        background-image: url("{% static '이미지스토리/페이지_7/1x/note3.png' %}");
+        background-size: cover;
+        padding: 13.7px;
+    }
+    div.a:after{
+        content: "";
+        display: block;
+
+    }
+
+    </style>
+    {% if get_board.image %}
+    <style>
+        #can_img{
+            max-width: 100%;
+        }
+        @media all and (min-width:991px) and (max-width:3000px) {
+            .fonta{
+                font-size: 1.8ch;
+            }
+        }
+        @media (min-width:769px){
+            #can_img{
+                max-width: 650px;
+            }
+        }
+
+        @media (min-width:769px) and (max-width:1800px){
+            #can_img{
+                max-width: 800px;
+            }
+        }
+
+        @media (min-width:1800px){
+            #can_img{
+                max-width: 850px;
+            }
+        }
+
+
+    </style>
+
+    <script type="text/javascript">
+
+        var offsetX, offsetY; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+
+        var canvas, ctx, flag = false,
+            startX = 0,
+            currX = 0,
+            startY = 0,
+            currY = 0,
+            lastX = 0,
+            lastY = 0,
+            scaleWidth = 0,
+            scaleHeight = 0,
+            _flag = true;
+
+        var select_color = "yellow",
+            select_width = 5;
+
+
+        function reOffset(){ //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+            var BB=document.getElementById('can').getBoundingClientRect();
+            offsetX=BB.left;
+            offsetY=BB.top;
+        }
+
+        window.onscroll=function(e){ reOffset(); } //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+        window.onresize=function(e){ reOffset(); } //크기 조정시
+
+
+
+
+        function init() {
+            var img = document.getElementById("can_img");
+            //원래 있던 이미지와 바꿔진 이미지의 비율을 알아보자
+
+            var real_img_size = new Image(); //이미지 크기가 동적이여도 비율로 크기 조절하기 위해서 설정
+            real_img_size.src = '{{get_board.image.url}}'; //이미지 크기가 동적이여도 비율로 크기 조절하기 위해서 설정
+
+            scaleWidth = real_img_size.width / img.clientWidth; //이미지 크기가 동적이여도 비율로 크기 조절하기 위해서 설정
+            scaleHeight = real_img_size.height / img.clientHeight; //이미지 크기가 동적이여도 비율로 크기 조절하기 위해서 설정
+
+            //area 영역 설정하기 디자인 하기
+
+            $('img').mapster({
+                stroke: true,
+                showToolTip: true,
+                clickNavigate: true,
+                fillOpacity: 0.3,
+                strokeWidth: 2,
+                // boundList: list.find('li'),
+                mapKey: 'state',
+                // listSelectedClass: 'selected'
+                areas: [
+                {% for i in areas %}
+                    {% if i.author == user.profile %}
+                    {
+                        key: '{{i.id}}',
+                        stroke: true,
+                        {% if user.is_authenticated %}
+                        strokeColor:"ff44ff",
+                        {% else %}
+                        strokeColor:"FF0000",
+                        {% endif %}
+                        {% if i.secure == 'public' %}
+                        toolTip: '{{i.title}}',
+                        {% else %}
+                        toolTip: '비공개:{{i.title}}',
+                        {% endif %}
+                    },
+                    {% elif i.secure == 'public' %}
+                    {
+                        key: '{{i.id}}',
+                        stroke: true,
+                        toolTip: '{{i.title}}',
+                    },
+                    {% else %}
+                    {
+                        key: '{{i.id}}',
+                        stroke: true,
+                        strokeColor:"FFFF00",
+                        toolTip: '비공개:{{i.title}}',
+                    },
+                    {% endif %}
+                {% endfor %}
+                ]
+            });
+
+            $('area').mapster('select');
+
+
+            $('#mapster_wrap_0').css("margin", "auto"); //가운데 정렬
+
+
+            canvas = document.getElementById('can');
+            ctx = canvas.getContext("2d");
+
+            canvas.width = img.clientWidth; //바뀌어진 width를 기준으로 canvas도 크기를 조정
+            canvas.height = img.clientHeight;
+
+            ctx.drawImage(img, 0, 0, canvas.width, canvas.height); //이미지 초기화 : 크기를 조정한 기준으로 이미지를 초기화
+
+            w = canvas.width;
+            h = canvas.height;
+
+            canvas.addEventListener("mousemove", function (e) {
+                findxy('move', e)
+            }, false);
+            canvas.addEventListener("mousedown", function (e) {
+                findxy('down', e)
+            }, false);
+            canvas.addEventListener("mouseup", function (e) {
+                findxy('up', e)
+            }, false);
+            canvas.addEventListener("mouseout", function (e) {
+                findxy('out', e)
+            }, false);
+            canvas.addEventListener("touchmove", function (e) {
+                findxy('touchmove', e)
+            }, false);
+            canvas.addEventListener("touchstart", function (e) {
+                findxy('touchdown', e)
+            }, false);
+            canvas.addEventListener("touchend", function (e) {
+                findxy('touchup', e)
+            }, false);
+        }
+
+        function draw() {
+            ctx.beginPath();
+            ctx.rect(startX, startY, lastX - startX, lastY - startY); //이미지 그릴때는 좀 다름..
+            ctx.strokeStyle = select_color;
+            ctx.lineWidth = select_width;
+            ctx.stroke();
+            ctx.closePath();
+
+            var x1 = document.getElementById("id_cord_sx");
+            var y1 = document.getElementById("id_cord_sy");
+            var x2 = document.getElementById("id_cord_lx");
+            var y2 = document.getElementById("id_cord_ly");
+
+            x1.value = parseInt(startX*scaleWidth); //image map을 저장할 좌표를 만들기
+            y1.value = parseInt(startY*scaleHeight); //이미지 크기가 동적이여도 비율로 크기 조절하기 위해서 설정
+            x2.value = parseInt(lastX*scaleWidth);
+            y2.value = parseInt(lastY*scaleHeight);
+        }
+
+        function change_cord(){ //때는 순간 좌표 위치만 바꾸기
+            var temp;
+            if (startX < lastX) // 좌표 image map으로 좌표 바꾸기
+            {
+                if (startY > lastY) //왼쪽아래 -> 오른쪽위
+                {
+                    temp = startY;
+                    startY = lastY;
+                    lastY = temp;
+                }
+            }
+            else if (startX > lastX) //오른쪽위 -> 왼쪽아래
+            {
+                temp = startX;
+                startX = lastX;
+                lastX = temp;
+
+                if (startY > lastY) //오른쪽아래 -> 왼쪽위
+                {
+                    temp = startY;
+                    startY = lastY;
+                    lastY = temp;
+                }
+            }
+
+            document.getElementById("id_cord_sx").value = parseInt(startX*scaleWidth); //image map을 저장할 좌표를 만들기
+            document.getElementById("id_cord_sy").value = parseInt(startY*scaleHeight); //이미지 크기가 동적이여도 비율로 크기 조절하기 위해서 설정
+            document.getElementById("id_cord_lx").value = parseInt(lastX*scaleWidth);
+            document.getElementById("id_cord_ly").value = parseInt(lastY*scaleHeight);
+
+            if (startX == lastX && startY == lastY){
+                document.getElementById("id_cord_sx").value = "";
+                document.getElementById("id_cord_sy").value = "";
+                document.getElementById("id_cord_lx").value = "";
+                document.getElementById("id_cord_ly").value = "";
+            }
+
+        }
+
+        function findxy(res, e) {
+            var img = document.getElementById("can_img");
+            if (res == 'down') {
+                if(_flag){
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // 선택하는 것처럼 보이기 위해서 그림 다시 초기화
+                }
+                currX = e.clientX - offsetX; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                currY = e.clientY - offsetY; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                if(_flag){ //맨처음 눌린 위치 순간 저장하기 위해서 조건문!
+                    startX = currX; // 맨처음 눌린 위치
+                    startY = currY; // 맨처음 눌린 위치
+                    _flag = false;
+                }
+                flag = true; //눌린 상태인지 확인
+            }
+
+            if (res == 'up') {
+                lastX = currX // 땐위치
+                lastY = currY // 땐위치
+                flag = false; //눌린 상태인지 확인
+                _flag = true; //밖을 나갔을 때, 맨처음 눌린 위치를 다시 저장할 수 있도록 true로
+                //  draw(); //그리기
+                change_cord(); // 때는 순간 그림을 그린 좌표를 imagemap에 맞게 좌표 바꾸기
+                currX = false; //밖을 나가서 전부 초기화
+                currY = false; //밖을 나가서 전부 초기화
+                startX = false; //밖을 나가서 전부 초기화
+                startY = false; //밖을 나가서 전부 초기화
+                lastX = false; //밖을 나가서 전부 초기화
+                lastY= false; //밖을 나가서 전부 초기화
+            }
+
+            if (res == 'move') {
+                if (flag) { //눌린 상태인지 확인
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    currX = e.clientX - offsetX; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                    currY = e.clientY - offsetY; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                    lastX = currX // 땐위치
+                    lastY = currY // 땐위치
+                    draw();
+                }
+            }
+
+            if (res == 'touchdown') {
+                if(_flag){
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // 선택하는 것처럼 보이기 위해서 그림 다시 초기화
+                }
+                currX = (e.targetTouches[0].clientX) - offsetX; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                currY = (e.targetTouches[0].clientY) - offsetY; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                if(_flag){ //맨처음 눌린 위치 순간 저장하기 위해서 조건문!
+                    startX = currX; // 맨처음 눌린 위치
+                    startY = currY; // 맨처음 눌린 위치
+                    _flag = false;
+                }
+                flag = true; //눌린 상태인지 확인
+            }
+
+            if (res == 'touchup') {
+                lastX = currX // 땐위치
+                lastY = currY // 땐위치
+                flag = false; //눌린 상태인지 확인
+                _flag = true; //밖을 나갔을 때, 맨처음 눌린 위치를 다시 저장할 수 있도록 true로
+                //  draw(); //그리기
+                change_cord(); // 때는 순간 그림을 그린 좌표를 imagemap에 맞게 좌표 바꾸기
+                currX = false; //밖을 나가서 전부 초기화
+                currY = false; //밖을 나가서 전부 초기화
+                startX = false; //밖을 나가서 전부 초기화
+                startY = false; //밖을 나가서 전부 초기화
+                lastX = false; //밖을 나가서 전부 초기화
+                lastY= false; //밖을 나가서 전부 초기화
+            }
+
+            if (res == 'touchmove') {
+                if (flag) { //눌린 상태인지 확인
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    currX = (e.targetTouches[0].clientX) - offsetX; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                    currY = (e.targetTouches[0].clientY) - offsetY; //스크롤로 움직일때 위치가 계속 변해서 해당 위치를 scroll이 변할 떄도 변하게 설정
+                    lastX = currX // 땐위치
+                    lastY = currY // 땐위치
+                    draw();
+                }
+            }
+
+        }
+
+        function use_canvas(){ // 설정하기 누르면 캔버스 사용가능
+            var img = document.getElementById("can_img");
+            if (document.getElementById('setting').value == "영역추가"){
+                //수정하기의 모습 바뀌도록
+                document.getElementById("mod_layer_intent").style.display="none";
+                $('#mod_layer').val("영역수정");
+                document.getElementById('can').style.display='block';
+                $('#mapster_wrap_0').css("display", "none");
+                document.getElementById('information_data').style.display='block';
+                document.getElementById('setting').value ='영역추가취소';
+                reOffset(); //추가하기를 누르면 canvas의 offset이 초기화
+            } else {
+                document.getElementById('can').style.display='none';
+                $('#mapster_wrap_0').css("display", "block");
+                document.getElementById('information_data').style.display='none';
+                document.getElementById('setting').value ='영역추가';
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                document.getElementById("id_cord_sx").value = "";
+                document.getElementById("id_cord_sy").value = "";
+                document.getElementById("id_cord_lx").value = "";
+                document.getElementById("id_cord_ly").value = "";
+            }
+        }
+
+        function see_all(){
+            if ($('#see_all').val() == "영역 전부보기"){
+                // 다른 녀석 안보이도록
+                $('#mapster_wrap_0').css("display", "block");
+
+                // 그룹일 경우 추가하기 가능
+                // 해당 게시글이 루트가 아닐 경우
+                {% if get_board.post_root.author %}
+                    {% if user.profile in get_board.post_root.group.all or get_board.post_root.author == user.profile %}
+                        document.getElementById('can').style.display='none';
+                        document.getElementById('information_data').style.display='none';
+                        document.getElementById('setting').value ='영역추가';
+                        //수정하기의 모습 바뀌도록
+                        //해당 작성자일 경우만 사용할 수 있도록 설정
+                        document.getElementById("mod_layer_intent").style.display="none";
+                        $('#mod_layer').val("영역수정");
+                    {% endif %}
+                {%else%}
+                // 해당 게시글이 루트 일 경우
+                    {% if user.profile in get_board.group.all or get_board.author == user.profile %}
+                        document.getElementById('can').style.display='none';
+                        document.getElementById('information_data').style.display='none';
+                        document.getElementById('setting').value ='영역추가';
+                        //수정하기의 모습 바뀌도록
+                        //해당 작성자일 경우만 사용할 수 있도록 설정
+                        document.getElementById("mod_layer_intent").style.display="none";
+                        $('#mod_layer').val("영역수정");
+                    {% endif %}
+                {% endif %}
+
+                $('area').mapster('deselect');
+
+                $('area').mapster('select');
+                $('#mapster_wrap_0').css("margin", "auto");
+                $('#see_all').val("영역 숨기기");
+            } else {
+                $('area').mapster('deselect');
+                $('#mapster_wrap_0').css("margin", "auto");
+                $('#see_all').val("영역 전부보기");
+            }
+        }
+
+        function mod_layer(){
+            if ($('#mod_layer').val() == "영역수정"){
+                // 다른 녀석 안보이도록
+                document.getElementById('can').style.display='none';
+                $('#mapster_wrap_0').css("display", "block");
+                document.getElementById('information_data').style.display='none';
+                document.getElementById('setting').value ='영역추가';
+                // 영역전부보기 사라지도록
+                $('area').mapster('deselect');
+                $('#see_all').val("영역 숨기기");
+
+                document.getElementById("mod_layer_intent").style.display="block";
+                $('area').mapster('select');
+                $('img').mapster('rebind', {
+                    stroke: true,
+                    onClick: function() {
+                    window.location=this.href.replace('/detail/', '/mod_detail/'); //수정하기 클릭했을때 그 위치를 클릭하면 수정 가능!
+                    return false;
+                    },
+                    fillOpacity: 0.3,
+                    strokeWidth: 2,
+                    showToolTip: true,
+                    mapKey: 'state',
+                    // listSelectedClass: 'selected'
+                    areas: [
+                    {% for i in areas %}
+                        {% if i.author == user.profile %}
+                        {
+                            key: '{{i.id}}',
+                            stroke: true,
+                            {% if user.is_authenticated %}
+                            strokeColor:"ff44ff",
+                            {% else %}
+                            strokeColor:"FF0000",
+                            {% endif %}
+                            {% if i.secure == 'public' %}
+                            toolTip: '{{i.title}}',
+                            {% else %}
+                            toolTip: '비공개:{{i.title}}',
+                            {% endif %}
+                        },
+                        {% elif i.secure == 'public' %}
+                        {
+                            key: '{{i.id}}',
+                            stroke: true,
+                            toolTip: '{{i.title}}',
+                        },
+                        {% else %}
+                        {
+                            key: '{{i.id}}',
+                            stroke: true,
+                            strokeColor:"FFFF00",
+                            toolTip: '비공개:{{i.title}}'
+                        },
+                        {% endif %}
+                    {% endfor %}
+                    ]
+                });
+
+                $('#mapster_wrap_0').css("margin", "auto");
+                $('#mod_layer').val("영역 수정취소");
+            } else {
+                document.getElementById("mod_layer_intent").style.display="none";
+                $('area').mapster('deselect');
+                $('area').mapster('select');
+                $('img').mapster('rebind', {
+                    stroke: true,
+                    clickNavigate: true,
+                    fillOpacity: 0.3,
+                    strokeWidth: 2,
+                    showToolTip: true,
+                    mapKey: 'state',
+                    // listSelectedClass: 'selected'
+                    areas: [
+                    {% for i in areas %}
+                        {% if i.author == user.profile %}
+                        {
+                            key: '{{i.id}}',
+                            stroke: true,
+                            {% if user.is_authenticated %}
+                            strokeColor:"ff44ff",
+                            {% else %}
+                            strokeColor:"FF0000",
+                            {% endif %}
+                            {% if i.secure == 'public' %}
+                            toolTip: '{{i.title}}',
+                            {% else %}
+                            toolTip: '비공개:{{i.title}}',
+                            {% endif %}
+                        },
+                        {% elif i.secure == 'public' %}
+                        {
+                            key: '{{i.id}}',
+                            stroke: true,
+                            toolTip: '{{i.title}}',
+                        },
+                        {% else %}
+                        {
+                            key: '{{i.id}}',
+                            stroke: true,
+                            strokeColor:"FFFF00",
+                            toolTip: '비공개:{{i.title}}'
+                        },
+                        {% endif %}
+                    {% endfor %}
+                    ]
+                });
+                $('#mapster_wrap_0').css("margin", "auto");
+                $('#mod_layer').val("영역수정");
+            }
+        }
+
+        function save_data(){
+            var a =   confirm("해당 영역의 정보를 저장하시겠습니까?")
+            var x1 = document.getElementById("id_cord_sx").value; //image map을 저장할 좌표를 만들기
+            var y1 = document.getElementById("id_cord_sy").value;
+            var x2 = document.getElementById("id_cord_lx").value;
+            var y2 = document.getElementById("id_cord_ly").value;
+            var title = document.getElementById("id_title").value;
+            var important = document.getElementById("id_important").value;
+            var information = document.getElementById("id_information").value;
+            if(a){
+                if (x1 == "" || y1 == "" || x2 == "" || y2 == "")
+                {
+                    alert("사진 구역을 클릭 후 드래그하여 영역을 설정해주세요!");
+                    return false;
+                } else if(title == "") {
+                    alert("제목을 적어주세요!");
+                    return false;
+                } else if(information == "") {
+                    alert("내용을 적어주세요!");
+                    return false;
+                } else if(important == "") {
+                    alert("중요도를 적어주세요!");
+                    return false;
+                }
+                document.information_data.submit();
+            } else {
+                return false;
+            }
+        }
+       </script>
+
+        {% endif %}
+       <script>
+        function route_show(button) {
+            if (document.getElementById('route').style.display == 'none'){
+                document.getElementById('route').style.display='block';
+                button.value='📌경로취소';
+            }else{
+                document.getElementById('route').style.display='none';
+                button.value='📌경로확인';
+            }
+        }
+        function re_comment(x, y){
+            var text = document.getElementById(y);
+            if (x.checked == true){
+                text.style.display="block";
+            } else {
+                text.style.display="none";
+            }
+        }
+
+        function delete_comment(x) {
+        var r = confirm("정말로 의견을 삭제하시겠습니까?");
+        if (r == true) {
+            location.href = "{% url 'board:comment_del' get_board.category.board_name get_board.id '00000' %}".replace(/00000/, x);
+        } else {
+            return;
+        }
+        }
+
+        </script>
+
+        <!-- notice ajax 스크립트 추가 -->
+        {% include "notice_ajax.html" %}
+
+        <!-- notice ajax 스크립트 추가 -->
+        {% include "bookmark_ajax.html" %}
+
+</head>
+<script>
+//검색하기 만들기
+function search_select(){
+    var value = $('#search_input').val();
+    if ($('#search_list [value="' + value + '"]').data('value')){
+        window.location="{% url 'board:detail' get_board.category.board_name '00000' %}".replace('/00000', '/'+$('#search_list [value="' + value + '"]').data('value'));
+    }
+}
+
+function find_select(){
+    var value = $('#find_input').val();
+    var key = $('#find_list [value="' + value + '"]').data('value');
+    if (key){
+        $('area').mapster('deselect');
+        $('img').mapster('highlight', String(key));
+        $('#see_all').val("영역 전부보기");
+    }
+}
+
+function delete_root(){
+    var a =   prompt("해당 글을 삭제하시겠습니까?\n삭제하면 삭제하려는 글의 영역의 정보가 전부 삭제됩니다!\n'삭제'를 입력하면 해당 정보가 삭제됩니다!");
+    if(a == "삭제"){
+        document.del_root.submit();
+    } else {
+        return false;
+    }
+}
+
+//영영관리 수정 oprn close
+function open_area() {
+            document.getElementsByClassName("view-area")[0].style.display = 'block';
+            document.getElementsByClassName("view-area")[1].style.display = 'block';
+            document.getElementsByClassName("non-view")[0].style.display = 'none';
+        }
+
+function close_area(){
+            document.getElementsByClassName("view-area")[0].style.display = 'none';
+            document.getElementsByClassName("view-area")[1].style.display = 'none';
+            document.getElementsByClassName("non-view")[0].style.display = 'block';
+        }
+
+</script>
+
+{% if get_board.image %}
+<body onload="init()">
+{% else %}
+<body>
+{% endif %}
+
+<div class="container-fluid">
+<!-- 검색하기 만들기 -->
+{% include 'navbar.html' %}
+{% if get_board.post.id %}
+<div style="display: flex;justify-content: space-between;margin-bottom: 5px; ">
+<a class="btn btn-togray fonta" href="{% url 'board:detail' get_board.category.board_name get_board.post.id %}">뒤로가기</a>
+<div>
+    {% if user.is_authenticated %}
+    <span title="북마크" style="cursor: pointer;" onclick="ajax_board_bookmark('{{get_board.id}}', this)">{{get_board|board_bookmark:request.user.username|safe}}</span>
+    {% endif %}
+    <a class="btn btn-gray fonta" href="{% url 'board:main' get_board.category.board_name %}">뒤로가기 </a>
+</div>
+</div>
+{% else %}
+<div style="text-align: right; margin-bottom: 5px;">
+    {% if user.is_authenticated %}
+    <span title="북마크" style="cursor: pointer;" onclick="ajax_board_bookmark('{{get_board.id}}', this)">{{get_board|board_bookmark:request.user.username|safe}}</span>
+    {% endif %}
+    <a class="btn btn-gray fonta" href="{% url 'board:main' get_board.category.board_name %}">뒤로가기 </a>
+</div>
+{% endif %}
+<p style = "margin-top:10px; margin-bottom: -10px;">
+    <span style = "font-size: 1.8ch;">{{get_board.created_at|date:"Y.m.d(D)"}}</span>
+    <span style = "font-size: 1.8ch; float: right;">{{get_board.author}}</span>
+</p>
+<hr>
+<div style="text-align: center;">
+
+    
+
+
+
+
+
+{% if get_board.image %}
+
+
+    <div style="text-align: center;">
+        <img style="margin:auto;" class="map" draggable="false" id="can_img" src="{{get_board.image.url}}" usemap="#map"></img>
+        <canvas id="can" style="display:none; margin:auto;border:2px solid;touch-action: none;"></canvas>
+    </div>
+
+    <div style = "margin-bottom: -18px; text-align: left;"> <!--영역 관리 버튼 열고닫기-->
+        <div class = "non-view" onclick = "open_area()">
+            <p style = "margin: 0 0 30px 10px; padding: 8px; font-weight: bold;">위치 및 영역 관리 <img style = "width:18px; height: 10px;" src = "{% static '이미지스토리/페이지_7/1x/열기.png' %}"></p>
+        </div>
+        <div class = "view-area" onclick="close_area()">
+            <p style = "margin: 0 0 10px 10px; padding: 8px; font-weight: bold;">위치 및 영역 관리 <img style = "width:18px; height: 10px;" src = "{% static '이미지스토리/페이지_8/1x/접기.png' %}"></p>
+        </div>
+    </div>
+
+    <div class = "view-area" style = "text-align:center; padding: 10px 0px 5px 0px;"> <!--영역 숨기기 & 전체보기 & 루트 수정삭제-->
+
+        <input class="btn btn-togray fonta" id="see_all" type="button" value="영역 숨기기" onclick="see_all();">
+        <!-- Extra large modal -->
+        <button type="button" class="btn btn-togray fonta" data-toggle="modal" data-target=".bd-example-modal-xl">전체화면</button>
+
+        <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <img width="100%" style="margin:auto;" src="{{get_board.image.url}}"></img>
+            </div>
+        </div>
+        </div>
+        
+            <div style = "margin-top: 10px;"> <!-- 루트 및 수정 삭제-->
+                <div style="margin-bottom: 10px;">
+                    <!-- 루트가 아닐 경우! -->
+                    <!-- 게시글 작성자 그리고 루트 게시글 작성자만이 수정 및 삭제가 가능하다! -->
+                    {% if get_board.post_root.author %}
+                        <!-- 게시글을 삭제할 수 있는 권한은 게시자이면서 권한이 있을 경우 -->
+                        {% if user.profile == get_board.author and user.profile in get_board.post_root.group.all or get_board.post_root.author == user.profile or user.is_superuser %}
+                        <a class="btn btn-togray fonta" href="{% url 'board:root_modify' get_board.category.board_name get_board.id %}">현재위치 수정</a>
+                        
+                        <form style="display: contents;" onsubmit="return delete_root();" action="{% url 'board:root_delete' get_board.category.board_name get_board.id %}" method='post' name='del_root'>
+                            {% csrf_token %}
+                            <input class="btn btn-togray fonta" type="submit" value="현재위치 삭제">
+                        </form>
+                        {% endif %}
+                    {%else%}
+                    <!-- 루트넣는 곳에 루트가 있을 경우!(즉, 게시글이 루트 일 경우) -->
+                    <!-- 게시글 작성자만 수정 및 삭제가 가능하다! -->
+                        {% if user.profile == get_board.author or user.is_superuser %}
+                        <a class="btn btn-togray fonta" href="{% url 'board:root_modify' get_board.category.board_name get_board.id %}">현재위치 수정</a>
+                        <form style="display: contents;" onsubmit="return delete_root();" action="{% url 'board:root_delete' get_board.category.board_name get_board.id %}" method='post' name='del_root'>
+                            {% csrf_token %}
+                            <input class="btn btn-togray fonta" type="submit" value="현재 위치 삭제">
+                        </form>
+                        {% endif %}
+                    {% endif %}
+                    </div>
+                
+                    <p>
+                        <input class="custom-select fonta" style="text-align: center;width: 140px;" id="search_input" type="search" name="search" list="search_list" placeholder="특정영역" autocomplete="off" onchange="search_select();"/>
+                        <datalist id="search_list">
+                            {% for i in search_board %}
+                            <option data-value="{{i.id}}" value="{{i.title}}"> {{i.show_all_node}}{{i.title}}</option>
+                            {% endfor %}
+                        </datalist>
+                
+                        <input class="custom-select fonta" style="text-align: center; width: 140px;" id="find_input" type="search" name="search" list="find_list" placeholder="현재영역" autocomplete="off" onchange="find_select();"/>
+                        <datalist id="find_list">
+                            <!-- 정렬하는 함수를 특정 class에 만들어서 사용 -->
+                            {% for i in find_input %}
+                                {% if i.secure == 'public' %}
+                                    <option data-value="{{i.id}}" value="{{i.title}}"></option>
+                                {% else %}
+                                    <option data-value="{{i.id}}" value="{{i.title}}"></option>
+                                {% endif %}
+                            {% endfor %}
+                        </datalist>
+                    </p>
+                
+                    <!-- 경로 보여주기 -->
+                    {% if get_board.post %}
+                    <p><input id="" type="button" value="📌경로확인" onclick="route_show(this);"></input></p>
+                    {% endif %}
+                
+                
+                    <!-- 지금까지 온 경로를 알기 위해서 넣기 -->
+                    <div id="route" style="display: none;">
+                    {% if get_board.post %}
+                        <p>
+                        {% include "route.html" %} > 🔹{{get_board.title}}
+                        </p>
+                    {% endif %}
+                    </div>
+                
+                    {% if get_board.post %}
+                        {% if get_board.author.nickname != get_board.post_root.author.nickname %}
+                        <!-- 협력자의 아이디를 알 수 있도록 하기 위해서 설정 -->
+                        <div style="text-align:center;"><span class="badge badge-pill badge-light">🤼작성자 : {% if get_board.author.nickname %}{{get_board.author.nickname}}{% else %}탈퇴회원{% endif %}</span></div>
+                        {% endif %}
+                    {% endif %}
+            </div>
+
+        <!-- 추가랑 수정만 할 수 있도록 (추후에는 관리자는 전부 가능하게 만들 것) -->
+        <!-- 루트넣는 곳에 루트가 있을 경우!(즉, 게시글이 루트가 아닐 경우) -->
+        <!-- 나중에 get_board.post_root.author == user.profile 어차피 모든 권한이 있어서 굳이 필요가 없음 -->
+        {% if get_board.post_root.author %}
+            {% if user.profile in get_board.post_root.group.all or get_board.post_root.author == user.profile %}
+            <p class = "">
+            <input class="btn btn-pinks fonta" id='setting' type="button" value="영역추가" onclick="use_canvas();">
+            <input class="btn btn-pinks fonta" id="mod_layer" type="button" value="영역수정" onclick="mod_layer();"/>
+            </p>
+            {% endif %}
+        {%else%}
+        <!-- 루트넣는 곳에 루트가 있을 경우!(즉, 게시글이 루트 일 경우) -->
+            {% if user.profile in get_board.group.all or get_board.author == user.profile %}
+            <p>
+            <input class="btn btn-pinks fonta" id='setting' type="button" value="영역추가" onclick="use_canvas();">
+            <input class="btn btn-pinks fonta" id="mod_layer" type="button" value="영역수정" onclick="mod_layer();"/>
+            </p>
+            {% endif %}
+        {% endif %}
+
+    </div>
+
+ 
+
+    {% if get_board.post_root.author %}
+        {% if user.profile in get_board.post_root.group.all or get_board.post_root.author == user.profile %}
+        <div>
+        <!-- 영역추가하기 -->
+        <form onsubmit="return save_data();" enctype="multipart/form-data" style='display:none;' id='information_data' action='{% url "board:write" board_name get_board.id %}' method='post' name='information_data'>
+            {% csrf_token %}
+            {{board_form.as_p}}
+        <input class="btn btn-pinks fonta" type='submit' value='영역 정보 추가'><br><br>
+        </form>
+        </div>
+
+        <!-- 수정하기 -->
+        <div id="mod_layer_intent" style="display: none;">
+            <p><b style = "color:rgb(250, 144, 144);">수정할 영역을 선택해주세요!</b></p>
+        </div>
+        {% endif %}
+    {%else%}
+        {% if user.profile in get_board.group.all or get_board.author == user.profile %}
+        <div>
+        <!-- 영역추가하기 -->
+        <form onsubmit="return save_data();" enctype="multipart/form-data" style='display:none;' id='information_data' action='{% url "board:write" board_name get_board.id %}' method='post' name='information_data'>
+            {% csrf_token %}
+            {{board_form.as_p}}
+        <input class="btn btn-pinks fonta" type='submit' value='영역 정보 추가'><br><br>
+        </form>
+        </div>
+
+        <!-- 수정하기 -->
+        <div id="mod_layer_intent" style="display: none;">
+            <p><b style = "color:rgb(250, 144, 144);">수정할 영역을 선택해주세요!</b></p>
+        </div>
+        {% endif %}
+    {% endif %}
+
+    <map name="map">
+        <!-- 지금은 만든 순서대로 중요도가 커지는 경향 필드에 중요도 필드를 집어넣을 것임 -->
+        <!-- 또한 사각형 뿐만 아니라 동그라미를 그릴 수 있는 것을 넣을 것임 -->
+        {% for i in areas %}
+            {% if i.secure == 'public' %}
+                <area shape="rect" state="{{i.id}}" class="{fillColor:'00ffff'}" coords="{{i.cord_sx}},{{i.cord_sy}},{{i.cord_lx}},{{i.cord_ly}}" href="{% url 'board:detail' board_name i.id %}" target="_self">
+            {% else %}
+                <area shape="rect" state="{{i.id}}" class="{fillColor:'00ffff'}" coords="{{i.cord_sx}},{{i.cord_sy}},{{i.cord_lx}},{{i.cord_ly}}" href="{% url 'board:detail' board_name i.id %}" target="_self">
+            {% endif %}
+        {% endfor %}
+    </map>
+{% endif %}
+
+<h1 class = "a" style = "font-size: 2.2ch; font-weight: 580;">{{get_board.title}}</h1>
+<div class="information a">{{get_board.information|linebreaks}}</div>
+
+
+</div>
+
+<hr>
+<!-- 댓글 작성 -->
+{% if user.is_authenticated %}
+<form action="{% url 'board:comment_write' get_board.category.board_name get_board.id %}" method="post">
+{% csrf_token %}
+<div class="input-group mb-3">
+    {{ commentform.as_table }}
+    <div class="input-group-append">
+      <input class="btn btn-outline-secondary btn-pinks fonta" type="submit" value="작성"/>
+    </div>
+</div>
+</form>
+{% endif %}
+
+<p></p>
+<!-- 대대댓글 정보 볼 수 있도록 설정!!! 재귀 함수 -->
+{%for comment in detail_getComment %}
+  {%include "comments.html" %}
+  <hr>
+{%endfor%}
+</div>
+</body>
+
+</html>

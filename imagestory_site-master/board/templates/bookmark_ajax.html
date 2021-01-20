@@ -1,0 +1,24 @@
+{% load static %}
+
+<script>
+function ajax_board_bookmark(x, y){
+    $.ajax({
+      // type을 설정합니다.
+      type : 'GET',
+      url : "{% url 'board:ajax_board_bookmark' '00000' %}".replace(/00000/, x),
+      success : function (data) {
+          // 로그인 사용자 정보가 잘못 되었을 경우
+          if(data["board_bookmark"]){
+            // $('#board_bookmark').text(data["board_bookmark"])
+            if(data["like_state"]){
+              // 즐겨찾기를 누를 수 있음
+              y.innerHTML = "<img style = 'width: 30px; height:30px;' src = '{% static '이미지스토리/페이지_7/1x/즐겨찾기1.png' %}'>"
+            } else {
+              // 즐겨찾기 취소를 누를 수 있음
+              y.innerHTML = "<img style = 'width: 30px; height:30px;' src = '{% static '이미지스토리/페이지_7/1x/즐겨찾기2.png' %}'>"
+            }
+          }
+      },
+    });
+  }
+</script>

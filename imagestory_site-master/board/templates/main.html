@@ -1,0 +1,206 @@
+{% load information_extras %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/imagestory.ico">
+    <title>이미지스토리</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script type="text/javascript" src="{% static 'jquery.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <script data-ad-client="ca-pub-1987584597836949" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <style>
+    .svg-icon {
+        width: 1.5em;
+        height: 1.5em;
+        transition: 1s;
+    }
+    .btn-write{
+        width: 65px;
+        height: 24px;
+        background-color:rgb(255, 169, 169);
+        color:black; 
+        font-weight:bold;
+        border-radius: 0.6em;
+        font-size: 1.5ch;
+        padding: 0.3%;
+        margin: 0 3px;
+    }
+    .to-right{
+        color:rgb(145, 145, 145);
+        overflow: hidden;
+        text-overflow:ellipsis;
+        float: right;
+        font-size: 1.4ch;
+    }
+    .input-icon{
+        background-image: url("{% static '이미지스토리/페이지_6/1x/검색.png' %}");
+        background-position: center;
+        background-size: cover;
+        background-color: white;
+        width: 25px;
+        height: 25px;
+        margin-top: 5px;
+        border: unset;
+        border-radius: 30%;
+    }
+    .form-control{
+        border: 0;
+        outline: 0;
+    }
+    .searching{
+        border: 2px solid rgb(194, 194, 194);
+        border-radius: 0.6em;
+    }
+    select{
+        background: url("{% static '이미지스토리/페이지_6/1x/위아래.PNG' %}") no-repeat 120% 50%;
+        background-size: 50%;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    </style>
+    {% include 'notice_ajax.html' %}
+</head>
+
+<body>
+    <div class="container-fluid">
+        <!-- 검색하기 만들기 -->
+        {% include 'navbar.html' %}
+        <div style="display:contents; margin: -10px 0 -20px 0;">
+            <a style="text-decoration: none; color: black; font-size: 2ch; font-weight: bold;" href="{% url 'board:main' board_name %}">
+                    <img style = "object-fit: contain; height: 50px; margin: -5px 10px -5px 10px;" src="{{categoryname.cat_image.url}}">
+                {{categoryname.showing_name}}
+            </a>
+        </div>
+
+            <hr style="border-style: dashed;">
+            <div style="text-align: right;">
+            <form method="GET" style="text-align:right;display:inline-block;vertical-align: middle;" action="{% url 'board:main' board_name %}">
+                <div class="input-group">
+                    <select name="search_option" class="searching" id="inputGroupSelect01" style = "margin-right: 6px;height:38px; width:100px; cursor: pointer; font-size: 1.4ch;">
+                        <option value="title_info" selected> &nbsp; 제목 + 내용</option>
+                        <option value="title">&nbsp; 제목</option>
+                        <option value="info">&nbsp; 내용</option>
+                        <option value="user">&nbsp; 사용자</option>
+                    </select>
+                    <div class="input-group-append searching" style = "height:38px; width: 140px;">
+                        <input placeholder="검색하기" style=" font-size: 1.4ch; height:33px; width: 105px;" type="text" class="form-control" name="search">
+                        <input type="submit" class = "input-icon" value = "" >
+                    </div>
+                </div>
+            </form>
+            {% if user.is_authenticated %}
+                <a class="btn btn-write" href="{% url 'board:root_write' board_name %}">글쓰기</a>
+            {% endif %}
+            </div>
+            <hr>
+            <!-- 모든 글 -->
+            {% for board in all_board %}
+            <div class="container-md">
+            <a style="color: black;text-decoration:none;" href="{% url 'board:detail' board_name board.id %}">
+                {% if board.secure == "public"%}
+                <div class="media">
+                    {% if board.image %}
+                    <img class="mr-3" style = "width: 100px; height: 130px;" src="{{board.image.url}}">
+                    {% else %}
+                    <!-- 이미지 없음 -->
+                    {% endif %}
+                    <div class="media-body" style="overflow: hidden;white-space:nowrap;"> 
+                        {% if board.group.count %}
+                            🤼협동
+                        {% endif %}
+                        <h5 class="mt-1">
+                            <b style="white-space:normal; font-size: 1.6ch; font-weight: bold;">{{board.title}}</b><br><br>
+                            <p style="margin-left:10px; font-size: 1.6ch;">{{board.information}}</p>
+                        </h5>
+                        <div class="mt-1 to-right">
+                            작성자 : {{board.author.nickname}}<br>
+                            작성일 : {{board.created_at|date:"m/d H:i"}}
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                {% endif %}
+
+                {% if board.secure == "private"%}
+                    <p style = "margin:3000px;">비공개글</p>
+                    {% if board.author.user == user or user.profile in board.group.all or request.user.is_superuser %}
+                        <div class="media">
+                            {% if board.image %}
+                            <img class="mr-3" style = "width: 100px; height: 130px;" src="{{board.image.url}}">
+                            {% else %}
+                            <!-- 이미지 없음 -->
+                            {% endif %}
+                            <div class="media-body" style="overflow: hidden;white-space:nowrap;"> 
+                                {% if board.group.count %}
+                                    🤼협동
+                                {% endif %}
+                                <h5 class="mt-1">
+                                    <b style="white-space:normal; font-size: 1.6ch;">{{board.title}}</b><br><br>
+                                    <p style="margin-left:10px; font-size: 1.6ch;">{{board.information}}</p>
+                                </h5>
+                                <div class="mt-1 to-right">
+                                    작성자 : {{board.author.nickname}}<br>
+                                    작성일 : {{board.created_at|date:"m/d H:i"}}
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    {% endif %}
+                {% endif %}
+            </a>
+            </div>
+            {% endfor %}
+
+        <!-- 페이지 네이션 -->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+                {%if all_board.has_previous%}
+                <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;</span>
+                    <span class="sr-only">First</span>
+                </a>
+                </li>
+                <li class="page-item">
+                <a class="page-link" href="?page={{all_board.previous_page_number}}" aria-label="Previous">
+                    <span aria-hidden="true">&lt;</span>
+                    <span class="sr-only">Previous</span>
+                </a>
+                </li>
+                {%endif%}
+
+                {% for i in page_range %}
+                {% if i == all_board.number %}
+                <li class="page-item active"><a class="page-link" style = "background-color:rgb(255, 169, 169); border: 0;" href="?page={{i}}">{{i}}</a></li>
+                {% else %}
+                <li class="page-item"><a class="page-link" style = "background-color:rgb(145, 145, 145); border: 0;" href="?page={{i}}">{{i}}</a></li>
+                {% endif %}
+                {% endfor %}
+
+                {%if all_board.has_next%}
+                <li class="page-item">
+                <a class="page-link" href="?page={{all_board.next_page_number}}" aria-label="Next">
+                    <span aria-hidden="true">&gt;</span>
+                    <span class="sr-only">Next</span>
+                </a>
+                </li>
+                <li class="page-item">
+                <a class="page-link" href="?page={{all_board.paginator.num_pages}}" aria-label="Last">
+                    <span aria-hidden="true">&raquo;</span>
+                    <span class="sr-only">Last</span>
+                </a>
+                </li>
+                {%endif%}
+            </ul>
+        </nav>
+    </div>
+
+</body>
+
+</html>

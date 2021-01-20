@@ -1,0 +1,91 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="/static/imagestory.ico">
+    <title>이미지스토리</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script type="text/javascript" src="{% static 'jquery.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+      .myusername{
+        background-image: url("{% static '이미지스토리/페이지_4/1x/로그.png' %}");
+        background-size: cover;
+        width: 210px;
+        height:40px;
+        border: none;
+        border-radius: 0.8em;
+      }
+      .mypassword{
+        background-image: url("{% static '이미지스토리/페이지_4/1x/비번.png' %}");
+        background-size: cover;
+        width: 210px;
+        height:40px;
+        border: none;
+        border-radius: 0.8em;
+      }
+
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .btn-pinks{
+            background-color:  rgb(234, 140, 140);
+            color: white;
+            width: 210px;
+            margin-bottom: 25px;
+    }
+
+      
+  </style>
+
+
+  </head>
+  <body>
+    <div style = " display: block;">
+        {% include 'navbar.html' %}
+    </div>
+    
+    <div style = "width:auto; text-align: center;display: block;">
+      <form method="POST" action="{% url 'account:login' %}" class="form-signin">
+          {% csrf_token %}
+        <a href="{% url 'category:show_category' %}">
+          <img style = "margin-bottom:45px; margin-top: 100px;" src="{% static 'mainlogo.png' %}" alt="" width="150" height="95" >
+        </a>
+        <!-- <h1 class="h3 mb-3 font-weight-normal">ImageStory</h1> -->
+        
+        <p>{{form.username}}</p>
+        <p>{{form.password}}</p>
+        <input class="btn btn-pinks" type="submit" value="로그인"/>
+        <input type="hidden" id ="next" name="next" value="{{ request.GET.next }}">
+
+        {% if messages %}
+          {% for message in messages %}
+          <br><br><p style = "color:lightcoral">{{ message }}</p>
+          {% endfor %}
+        {% endif %}
+
+        <br>
+
+        <a style = "color:rgb(158, 158, 158);" href = "{% url 'account:signup' %}">회원가입</a>
+        <div></div>
+      </form>
+   </div>
+  </body> 
+</html>

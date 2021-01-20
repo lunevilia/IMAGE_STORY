@@ -1,0 +1,152 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지스토리</title>
+    <link rel="icon" href="/static/imagestory.ico">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script type="text/javascript" src="{% static 'jquery.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.bundle.js"></script>
+    <style>
+        .svg-icon {
+            width: 1.5em;
+            height: 1.5em;
+            transition: 1s;
+        }
+    </style>
+</head>
+{% include 'notice_ajax.html' %}
+<body>
+    <div class="container-fluid">
+        {% include 'navbar.html' %}
+        <h1>사용법</h1>
+        <hr>
+        <div class="row row-cols-1 row-cols-md-3">
+            <a style="text-decoration: none;" href="{% url 'tutorial:board_info' %}">
+            <div class="col mb-4">
+              <div class="card h-100">
+                <img src="{% static 'tutorial/board_info.png' %}" class="card-img-top" alt="게시글 요소">
+                <div class="card-body">
+                  <h5 class="card-title">게시글 요소들의 정보</h5>
+                  <p class="card-text">게시글의 해당 기능들이 무엇을 나타내고 있는지를 알아보기</p>
+                </div>
+              </div>
+            </div>
+            </a>
+            <a style="text-decoration: none;" href="{% url 'tutorial:board_write' %}">
+            <div class="col mb-4">
+              <div class="card h-100">
+                <img src="{% static 'tutorial/board_write.png' %}" class="card-img-top" alt="게시글 작성">
+                <div class="card-body">
+                  <h5 class="card-title">게시글 작성 방법</h5>
+                  <p class="card-text">게시글을 작성하는 방법 알아보기</p>
+                </div>
+              </div>
+            </div>
+            </a>
+            <a style="text-decoration: none;" href="{% url 'tutorial:board_modify' %}">
+            <div class="col mb-4">
+              <div class="card h-100">
+                <img src="{% static 'tutorial/board_modify.png' %}" class="card-img-top" alt="게시글 수정">
+                <div class="card-body">
+                  <h5 class="card-title">게시글 수정 방법</h5>
+                  <p class="card-text">게시글을 수정하는 방법 알아보기</p>
+                </div>
+              </div>
+            </div>
+            </a>
+            <a style="text-decoration: none;" href="{% url 'tutorial:board_delete' %}">
+            <div class="col mb-4">
+              <div class="card h-100">
+                <img src="{% static 'tutorial/board_delete.png' %}" class="card-img-top" alt="게시글 삭제">
+                <div class="card-body">
+                  <h5 class="card-title">게시글 삭제 방법</h5>
+                  <p class="card-text">게시글을 삭제하는 방법 알아보기</p>
+                </div>
+              </div>
+            </div>
+            </a>
+            <a style="text-decoration: none;" href="{% url 'tutorial:area_write' %}">
+            <div class="col mb-4">
+                <div class="card h-100">
+                  <img src="{% static 'tutorial/area_write.png' %}" class="card-img-top" alt="영역 추가">
+                  <div class="card-body">
+                    <h5 class="card-title">영역 추가 방법</h5>
+                    <p class="card-text">영역을 생성하는 방법 알아보기</p>
+                  </div>
+                </div>
+            </div>
+            </a>
+            <a style="text-decoration: none;" href="{% url 'tutorial:area_layer' %}">
+            <div class="col mb-4">
+                <div class="card h-100">
+                  <img src="{% static 'tutorial/area_layer.png' %}" class="card-img-top" alt="영역 수정">
+                  <div class="card-body">
+                    <h5 class="card-title">영역 수정 방법</h5>
+                    <p class="card-text">영역을 수정하는 방법 알아보기</p>
+                  </div>
+                </div>
+            </div>
+            </a>
+            <a style="text-decoration: none;" href="{% url 'tutorial:area_modify' %}">
+            <div class="col mb-4">
+                <div class="card h-100">
+                  <img src="{% static 'tutorial/area_modify.png' %}" class="card-img-top" alt="영역 내용">
+                  <div class="card-body">
+                    <h5 class="card-title">영역 내용 수정 방법</h5>
+                    <p class="card-text">영역에 내용을 수정하는 방법 알아보기</p>
+                  </div>
+                </div>
+            </div>
+            </a>
+            <a style="text-decoration: none;" href="{% url 'tutorial:area_delete' %}">
+            <div class="col mb-4">
+                <div class="card h-100">
+                  <img src="{% static 'tutorial/area_delete.png' %}" class="card-img-top" alt="영역 삭제">
+                  <div class="card-body">
+                    <h5 class="card-title">영역 삭제 방법</h5>
+                    <p class="card-text">영역을 삭제하는 방법 알아보기</p>
+                  </div>
+                </div>
+            </div>
+            </a>
+            <a style="text-decoration: none;" href="{% url 'tutorial:mypage' %}">
+            <div class="col mb-4">
+                <div class="card h-100">
+                  <img src="{% static 'tutorial/mypage.png' %}" class="card-img-top" alt="마이페이지">
+                  <div class="card-body">
+                    <h5 class="card-title">마이페이지</h5>
+                    <p class="card-text">마이페이지에 어떤 것이 있는지 알아보기</p>
+                  </div>
+                </div>
+            </div>
+            </a>
+            <a style="text-decoration: none;" href="{% url 'tutorial:alert_info' %}">
+            <div class="col mb-4">
+                <div class="card h-100">
+                  <img src="{% static 'tutorial/alart.png' %}" class="card-img-top" alt="알림">
+                  <div class="card-body">
+                    <h5 class="card-title">알림</h5>
+                    <p class="card-text">알림에 관해 알아보기</p>
+                  </div>
+                </div>
+            </div>
+            </a>
+            <a style="text-decoration: none;" href="{% url 'tutorial:auth_info' %}">
+              <div class="col mb-4">
+                  <div class="card h-100">
+                    <img src="{% static 'tutorial/auth_info.png' %}" class="card-img-top" alt="협력하기">
+                    <div class="card-body">
+                      <h5 class="card-title">협력하기</h5>
+                      <p class="card-text">자신의 게시글에 다른 사람과 같이 작업을 하고 싶을 경우</p>
+                    </div>
+                  </div>
+              </div>
+              </a>
+          </div>
+    </div>
+</body>
+</html>

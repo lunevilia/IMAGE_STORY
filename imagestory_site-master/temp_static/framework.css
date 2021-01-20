@@ -1,0 +1,40 @@
+@charset "utf-8";
+/*
+Template Name: Miresa
+Author: <a href="https://www.os-templates.com/">OS Templates</a>
+Author URI: https://www.os-templates.com/
+Licence: Free to use under our free template licence terms
+Licence URI: https://www.os-templates.com/template-terms
+File: Framework CSS
+*/
+
+*, *::before, *::after{box-sizing:border-box;}
+
+
+.nospace{margin:0; padding:0; list-style:none;}
+.inline *{display:inline-block;}
+.inline *:last-child{margin-right:0;}
+.pushright li{margin-right:20px;}
+.pushright li:last-child{margin-right:0;}
+.borderedbox{border:1px solid;}
+
+
+.overlay{position:relative; z-index:1;}
+.overlay::after{display:block; position:absolute; top:0; left:0; width:100%; height:100%; content:""; z-index:-1;}
+.bgded{background-position:top center; background-repeat:no-repeat; background-size:cover;}
+
+
+.clear, .group{display:block;}
+.clear::before, .clear::after, .group::before, .group::after{display:table; content:"";}
+.clear, .clear::after, .group, .group::after{clear:both;}
+
+
+.heading.nospace{margin:0;}
+
+/*
+The "hoc" class is a generic class used to centre a containing element horizontally
+It should be used in conjunction with a second class or ID
+*/
+.hoc{display:block; margin:0 auto;}
+
+

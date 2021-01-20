@@ -1,0 +1,33 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지스토리</title>
+    <link rel="icon" href="/static/imagestory.ico">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script type="text/javascript" src="{% static 'jquery.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.bundle.js"></script>
+    <style>
+        .svg-icon {
+            width: 1.5em;
+            height: 1.5em;
+            transition: 1s;
+        }
+    </style>
+</head>
+{% include 'notice_ajax.html' %}
+<body>
+    <div class="container-fluid">
+    {% include 'navbar.html' %}
+    <a href="/">뒤로가기</a>
+    <form method="POST" action="{% url 'category:mod_category' category.id %}">
+        {% csrf_token %}
+        {{categoryform.as_table}}
+        <input type="submit" value="수정하기"/>
+    </form>
+    </div>
+</body>
+</html>

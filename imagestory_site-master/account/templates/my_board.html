@@ -1,0 +1,171 @@
+{% load information_extras %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지스토리</title>
+    <link rel="icon" href="/static/imagestory.ico">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script type="text/javascript" src="{% static 'jquery.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <style>
+        .svg-icon {
+            width: 1.5em;
+            height: 1.5em;
+            transition: 1s;
+        }
+    </style>
+    {% include 'notice_ajax.html' %}
+
+    <script>
+        //중복 확인하는 ajax 함수
+        function overlap(x, region, id){
+        $.ajax({
+            // type을 설정합니다.
+            type : 'GET',
+            url : "{% url 'account:auth_ajax' 'abc' 'region' 'ida' %}".replace(/abc/, x.toString()).replace(/region/, region.toString()).replace(/ida/, id.toString()),
+            success : function (data) {
+                // 만약 주는 녀석이 region에 따른 녀석이면 region에 따른 녀석만 변경
+                if(data["check"]){
+                    if (region == "nickname"){
+                        $('#nickname_check'+id).text("권한추가");
+                        $('#nickname_check'+id).css("color", "blue");
+                        location.reload(true);
+                    }
+                } else {
+                    if (region == "nickname"){
+                        $('#nickname_check'+id).text("존재하지 않는 아이디");
+                        $('#nickname_check'+id).css("color", "red");
+                    }
+                }
+            },
+            error: function () {
+                if (region == "nickname"){
+                    $('#nickname_check'+id).text("닉네임을 입력해주세요");
+                    nickname_check = false;
+                }
+            },
+        });
+        }
+
+        function delap(x, region, id){
+        $.ajax({
+            // type을 설정합니다.
+            type : 'GET',
+            url : "{% url 'account:auth_del_ajax' 'abc' 'region' 'ida' %}".replace(/abc/, x.toString()).replace(/region/, region.toString()).replace(/ida/, id.toString()),
+            success : function (data) {
+                // 만약 주는 녀석이 region에 따른 녀석이면 region에 따른 녀석만 변경
+                if(data["check"]){
+                    if (region == "nickname"){
+                        $('#nickname_check'+id).text("권한제거");
+                        $('#nickname_check'+id).css("color", "blue");
+                        location.reload(true);
+                    }
+                } else {
+                    if (region == "nickname"){
+                        $('#nickname_check'+id).text("권한유저가 아닙니다!");
+                        $('#nickname_check'+id).css("color", "red");
+                    }
+                }
+            },
+            error: function () {
+                if (region == "nickname"){
+                    $('#nickname_check'+id).text("닉네임을 입력해주세요");
+                    nickname_check = false;
+                }
+            },
+        });
+        }
+    </script>
+</head>
+<body>
+    <div class="container-fluid">
+        {% include 'navbar.html' %}
+        <h2 style="text-align: center;"><a href="/account/profile">{{user.profile.nickname}} 페이지</a></h2>
+    <h4 style="text-align: center;">나의 게시글 및 권한관리</h4>
+    <div style="text-align: center;">
+    <form method="GET" style="text-align:right;display:inline-block;vertical-align: middle;" action="{% url 'account:my_board' %}">
+        <div class="input-group">
+            <select name="search_option" class="custom-select" id="inputGroupSelect01">
+                <option value="title_info" selected>제목+내용</option>
+                <option value="title">제목</option>
+                <option value="info">내용</option>
+            </select>
+            <div class="input-group-append">
+            <input placeholder="검색하기" style="width: 130px;" type="text" class="form-control" name="search">
+            </div>
+            <div class="input-group-append">
+                <input type="submit" value="🔍">
+            </div>
+        </div>
+    </form>
+    </div>
+    <hr>
+        {% for myboard in myboards %}
+        <div style="text-align:center;">
+        {% if myboard.secure == 'private' %}<span class="badge badge-pill badge-dark">비공개글</span>{% endif %}{% if myboard.group.count %}🤼협동{% endif %}
+        <p><h3>{{myboard.short_title}}</h3><a href="/board/detail/{{myboard.category.board_name}}/{{myboard.id}}">게시글 보러가기</a></p>
+        <p>
+            <em>{{myboard.created_at|date:"Y-m-d H:i"}}</em>
+            작성자 : {{myboard.author.nickname}}
+        </p>
+        <div>
+        {% if myboard.group.count %}권한 : {% for i in myboard.group.all %}<span class="badge badge-primary">{{i.nickname}}</span> {% endfor %}{% endif %}
+        </div>
+        <div style="margin-top: 5px;">
+        <input id="nickname_id{{myboard.id}}" placeholder="닉네임"/>
+        <input class="btn btn-primary btn-sm" type="button" value="권한추가" onclick="overlap($('#nickname_id{{myboard.id}}').val(), 'nickname', '{{myboard.id}}');">
+        <input class="btn btn-danger btn-sm" type="button" value="권한제거" onclick="delap($('#nickname_id{{myboard.id}}').val(), 'nickname', '{{myboard.id}}');">
+        <span id="nickname_check{{myboard.id}}"></span>
+        </div>
+        </div>
+        <hr>
+        {% endfor %}
+        <!-- 페이지 네이션 -->
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-center">
+              {%if myboards.has_previous%}
+              <li class="page-item">
+                <a class="page-link" href="?page=1" aria-label="First">
+                  <span aria-hidden="true">&laquo;</span>
+                  <span class="sr-only">First</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{myboards.previous_page_number}}" aria-label="Previous">
+                  <span aria-hidden="true">&lt;</span>
+                  <span class="sr-only">Previous</span>
+                </a>
+              </li>
+              {%endif%}
+
+              {% for i in page_range %}
+              {% if i == myboards.number %}
+              <li class="page-item active"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+              {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+              {% endif %}
+              {% endfor %}
+
+              {%if myboards.has_next%}
+                <li class="page-item">
+                <a class="page-link" href="?page={{myboards.next_page_number}}" aria-label="Next">
+                  <span aria-hidden="true">&gt;</span>
+                  <span class="sr-only">Next</span>
+                </a>
+              </li>
+              <li class="page-item">
+                <a class="page-link" href="?page={{myboards.paginator.num_pages}}" aria-label="Last">
+                  <span aria-hidden="true">&raquo;</span>
+                  <span class="sr-only">Last</span>
+                </a>
+              </li>
+              {%endif%}
+            </ul>
+        </nav>
+    </div>
+</body>
+</html>

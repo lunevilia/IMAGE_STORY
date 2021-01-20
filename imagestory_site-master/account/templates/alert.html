@@ -1,0 +1,42 @@
+{% load information_extras %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이미지스토리</title>
+    <link rel="icon" href="/static/imagestory.ico">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script type="text/javascript" src="{% static 'jquery.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+    <style>
+        .svg-icon {
+            width: 1.5em;
+            height: 1.5em;
+            transition: 1s;
+        }
+    </style>
+    {% include 'notice_ajax.html' %}
+</head>
+<body>
+    <div class="container-fluid">
+        {% include 'navbar.html' %}
+        <h2 style="text-align: center;"><a href="/account/profile">{{user.profile.nickname}} 페이지</a></h2>
+    <h4 style="text-align: center;">알림 메세지</h4>
+    <hr>
+    <a href="{% url 'account:del_alert_board' 'all' %}">알림 전체 삭제</a>
+    <hr>
+    {% for commentalert in user.profile.commentalertcontent_set.all %}
+        <div style="text-align:center;">
+        <p><h3> 댓글 : {{commentalert.content.body}}{% if commentalert.view %} <span class="badge badge-pill badge-warning">NEW</span> {% else %} <span class="badge badge-pill badge-success">확인</span>{% endif %}</h3><a href="/board/detail/alerted{{commentalert.id}}/{{commentalert.board.id}}">게시글 보러가기</a></p>
+        <p>
+            송신자 : {{commentalert.sender_name}} | <a href="{% url 'account:del_alert_board' commentalert.id %}">알림삭제</a>
+        </p>
+        </div>
+        <hr>
+    {% endfor %}
+    </div>
+</body>
+</html>

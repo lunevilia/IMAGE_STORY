@@ -1,0 +1,45 @@
+{% load static %}
+<!-- 댓글 내용 -->
+{% if comment %}
+{% if margin %}
+<div class="media" style="margin-left: -32px; margin-top: 7px;"> <!-- 아주 큰 p -->
+{% else %}
+<div class="media ml-0"> <!-- 아주 큰 p -->
+{% endif %}
+<img class="mr-2" alt="{{comment.author.nickname}}" style="border-radius: 5px;" width="50" height="50" src="{% if comment.author.image %}{{comment.author.image.url}}{% else %}{% static '이미지스토리/페이지_7/1x/댓글프로필.png' %}{% endif %}" alt="...">
+<div class="media-body">
+    <em style="font-family: Arial, Helvetica, sans-serif;"><b style = "font-size:1.8ch; font-style: normal;">{{comment.author.nickname}}</b> &nbsp;<b style = "font-size:1.3ch; font-style: normal;">{{comment.created_at|date:"Y.m.d(D) H:i"}}</b></em>
+    {% if request.user.username == comment.author.user.username %}
+    <a style="color:#1a1a1a;cursor:pointer;float:right; font-weight: bold; font-size: 1.5ch;" onclick="delete_comment('{{comment.id}}');">댓글삭제</a>
+    {% endif %}
+    <br>
+      <span style="word-break:break-word;">{{comment.body}}<span>
+<div>
+
+</div>
+
+<!-- 댓글 대댓글 작성 -->
+{% if user.is_authenticated %}
+<div style = "font-size: 1.8ch; margin-left: 10px;"><input id="checkBox{{comment.id}}" style = "margin-right: 3px;" type="checkbox" name="re_comment" value="답글" onclick="re_comment(this, 're_comment{{comment.id}}')">답글달기</div>
+<div style="display: none;" id=re_comment{{comment.id}}>
+<form action="{% url 'board:recomment_write' get_board.category.board_name get_board.id comment.id %}" method="post">
+{% csrf_token %}
+<div class="input-group mb-3">
+    {{ commentform.as_table }}
+    <div class="input-group-append">
+      <input class="btn btn-outline-secondary" type="submit" value="작성"/>
+    </div>
+</div>
+</form>
+</div>
+{% endif %}
+
+{% for re_comment in comment.comment_set.all %}
+    {%with margin="1" comment=re_comment template_name="comments.html" %}
+        {%include template_name%}
+    {%endwith%}  
+{% endfor %}
+
+</div>
+</div>
+{% endif %}

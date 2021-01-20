@@ -1,0 +1,6 @@
+{% if bookmark.post.post %}
+    {%with get_board=bookmark.post.post template_name="route.html" %}
+        <!-- 최상위 게시글 빼고는 모든 글은 important를 가지고 있어야한다 -->
+        {%include template_name%}{%if get_board.important %} > {% else %}🏠{% endif %}<a href="{% url 'board:detail' get_board.category get_board.id %}">{{get_board.route_title}}</a>
+    {%endwith%}  
+{% endif %}

@@ -1,0 +1,156 @@
+<!--메인페이지-->
+{% load information_extras %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!--첫번째 화면이여서 넣었음-->
+  <meta name="google-site-verification" content="IANfJ5GG3jOtbLzskdy31hTOtRX4HH5jvfszkXuk2Wc" />
+  <!--<meta name="naver-site-verification" content="4861998858ae18704b478becf0e7c2813a436872" />-->
+  <meta name="naver-site-verification" content="f5beb5b04e2663a6215010f22dfdb75aa03c7c5c" />
+  <meta name="robots" content="index,follow">
+  <meta name="description" content="이미지스토리 자신의 사진에 영역을 설정해서 그 영역에 원해는 내용을 기록하는 나만의 추억 혹은 공유하는 사이트!">
+  <!--open Graph API-->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="이미지스토리">
+  <meta property="og:description" content="이미지스토리 자신의 사진에 영역을 설정해서 그 영역에 원해는 내용을 기록하는 나만의 추억 혹은 공유하는 사이트!">
+  <meta property="og:image" content="https://www.imagestory.shop{% static 'imagestory_og.png' %}">
+  <meta property="og:url" content="https://www.imagestory.shop">
+
+  <title>이미지스토리</title>
+  <link rel="icon" href="/static/imagestory.ico">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+  <link rel="stylesheet" href="{% static 'framework.css' %}">
+  <link rel="stylesheet" href="{% static 'layout.css' %}">
+  <script type="text/javascript" src="{% static 'jquery.js' %}"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.bundle.js"></script>
+
+  <link rel="stylesheet" href="{% static 'animate.css' %}">
+  <link rel="stylesheet" href="{% static 'icofont.min.css' %}">
+  <link rel="stylesheet" href="{% static 'main.js' %}">
+
+  <script data-ad-client="ca-pub-1987584597836949" async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    
+</head>
+<style>
+  .svg-icon {
+    width: 1.5em;
+    height: 1.5em;
+    transition: 1s;
+  }
+  .set_icon{
+    width: 1.5em;
+    height: 1.5em;
+    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuxpWRWFActhXppELuKJfNz7-J0hXIrdwuwQ&usqp=CAU");
+    background-position: center;
+    background-size: cover;
+    border-radius: 100px;
+    margin-right: 10px;
+  }
+
+  #boxi{
+    max-width: 400px;
+    margin: 5px;
+    width:45%; 
+    height: 250px;
+    vertical-align:middle;
+    line-height:200px;
+    background-color: rgb(124, 124, 124);
+
+    border: 2px solid black;
+    font-weight: bold;
+  }
+  .mainlogo{
+      max-width: 100%;
+      height: auto !important;
+    }
+  .imags{
+    max-width: 80%;
+    height: auto !important;
+    margin-bottom: 30px;
+
+
+  }
+  .medi{
+      font-weight: bold;
+    }
+
+
+  @media screen and (max-width: 480px) {
+    .medi{
+      display: block;
+    }
+
+  }
+</style>
+
+{% include 'notice_ajax.html' %}
+<script>
+  function del_check() {
+    a = confirm("게시판을 삭제하시겠습니까?");
+    if (a) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+</script>
+
+
+<body>
+  <div class="container-fluid">
+    {% include 'navbar.html' %}
+
+    <!----------------메인 사진------------------------->
+
+    <div class="light" style = "text-align: center;">
+      <img class = "mainlogo" src = "{% static '이미지스토리/new-folder/이미지스토리.jpg' %}" style = "margin: 0px auto 0px auto;">
+    </div>
+
+    <!--게시판 추가(관리자)-->
+    {% if user.is_superuser %}
+    <hr>
+    <form action="{% url 'category:make_category' %}" method='POST' enctype="multipart/form-data">
+      {% csrf_token %}
+      {{categoryform.as_p}}
+      <input type="submit" value="게시판생성" />
+    </form>
+    {% endif %}
+    <hr>
+    <div style="text-align:center;">
+      <!--카테고리 뷰-->
+      {% for i in all_category %}
+        <div style = "width: 50%; margin: 0 auto; float:left">
+        <a class="" id = "" href="{% url 'board:main' i.board_name %}">
+        {%if i.image %}
+          <img class = "imags" src = "{{i.image.url}}" alt = "카테고리 사진">
+        {% endif %}
+        </a>
+      </div>
+      {% if user.is_superuser %}
+      <div class = "medi" style = "max-height: 300px; width: 100%; float: left; height: auto !important;">
+      <a class="btn btn-warning" style = " margin-top: 10px; margin-bottom: 10px;;" href="{% url 'category:mod_category' i.id %}">수정하기</a>
+      
+      <form style="display: contents;" onsubmit="return del_check();" action="{% url 'category:del_category' i.id %}"
+        method="POST">
+        {% csrf_token %}
+        <input class="btn btn-danger" type="submit" value="삭제하기" />
+      </form>
+      </div>
+      <p></p>
+      {% endif %}
+      {% endfor %}
+    </div>
+
+  </div>
+</body>
+</html>
