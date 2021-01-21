@@ -17,20 +17,37 @@
             height: 1.5em;
             transition: 1s;
         }
+        .btn-gray{
+            background-color: rgb(158, 158, 158);
+            color: white;
+        }
+        .fonta{
+            font-size: 1.65ch;
+        }
+        .news{
+            background-color: rgb(250, 144, 144);
+            color: white;
+            font-size: 1.2ch;
+        }
+        .chec{
+            background-color: rgb(124, 155, 255);
+            color: white; 
+            font-size: 1.2ch;
+        }
     </style>
     {% include 'notice_ajax.html' %}
 </head>
 <body>
     <div class="container-fluid">
         {% include 'navbar.html' %}
-        <h2 style="text-align: center;"><a href="/account/profile">{{user.profile.nickname}} 페이지</a></h2>
+        <h2 style="text-align: center; font-size: 3ch;"><a href="/account/profile" style = "color:rgb(250, 144, 144);">{{user.profile.nickname}} 페이지</a></h2>
     <h4 style="text-align: center;">알림 메세지</h4>
     <hr>
-    <a href="{% url 'account:del_alert_board' 'all' %}">알림 전체 삭제</a>
+    <a class="btn btn-gray fonta" href="{% url 'account:del_alert_board' 'all' %}">알림 전체 삭제</a>
     <hr>
     {% for commentalert in user.profile.commentalertcontent_set.all %}
         <div style="text-align:center;">
-        <p><h3> 댓글 : {{commentalert.content.body}}{% if commentalert.view %} <span class="badge badge-pill badge-warning">NEW</span> {% else %} <span class="badge badge-pill badge-success">확인</span>{% endif %}</h3><a href="/board/detail/alerted{{commentalert.id}}/{{commentalert.board.id}}">게시글 보러가기</a></p>
+        <p><h3 style = "font-size:2.8ch;"> 댓글 : {{commentalert.content.body}}{% if commentalert.view %} <span class="badge badge-pill news">NEW</span> {% else %} <span class="badge badge-pill chec">확인</span>{% endif %}</h3><a href="/board/detail/alerted{{commentalert.id}}/{{commentalert.board.id}}">게시글 보러가기</a></p>
         <p>
             송신자 : {{commentalert.sender_name}} | <a href="{% url 'account:del_alert_board' commentalert.id %}">알림삭제</a>
         </p>
