@@ -70,15 +70,14 @@
         content: "";
         display: block;
         width: 330px;
-        border-bottom: 43.3px solid #d6d6d6;
-        margin: 10px auto 0 auto;
+        margin: 10px auto 45px auto;
     }
     div.a{
         width: 330px;
         font-weight: 500;
         text-align: center;
         margin: -50px auto 0 auto;
-        background-image: url("{% static '이미지스토리/페이지_7/1x/note3.png' %}");
+        background-image: url("{% static '이미지스토리/페이지_7/1x/note.png' %}");
         background-size: cover;
         padding: 13.7px;
     }
@@ -690,7 +689,7 @@ function close_area(){
 {% include 'navbar.html' %}
 {% if get_board.post.id %}
 <div style="display: flex;justify-content: space-between;margin-bottom: 5px; ">
-<a class="btn btn-togray fonta" href="{% url 'board:detail' get_board.category.board_name get_board.post.id %}">뒤로가기</a>
+<a class="btn btn-gray fonta" href="{% url 'board:detail' get_board.category.board_name get_board.post.id %}">뒤로가기</a>
 <div>
     {% if user.is_authenticated %}
     <span title="북마크" style="cursor: pointer;" onclick="ajax_board_bookmark('{{get_board.id}}', this)">{{get_board|board_bookmark:request.user.username|safe}}</span>
@@ -719,116 +718,122 @@ function close_area(){
 
 
 
-{% if get_board.image %}
+    {% if get_board.image %}
 
 
-    <div style="text-align: center;">
-        <img style="margin:auto;" class="map" draggable="false" id="can_img" src="{{get_board.image.url}}" usemap="#map"></img>
-        <canvas id="can" style="display:none; margin:auto;border:2px solid;touch-action: none;"></canvas>
-    </div>
-
-    <div style = "margin-bottom: -18px; text-align: left;"> <!--영역 관리 버튼 열고닫기-->
-        <div class = "non-view" onclick = "open_area()">
-            <p style = "margin: 0 0 30px 10px; padding: 8px; font-weight: bold;">위치 및 영역 관리 <img style = "width:18px; height: 10px;" src = "{% static '이미지스토리/페이지_7/1x/열기.png' %}"></p>
+        <div style="text-align: center;">
+            <img style="margin:auto;" class="map" draggable="false" id="can_img" src="{{get_board.image.url}}" usemap="#map"></img>
+            <canvas id="can" style="display:none; margin:auto;border:2px solid;touch-action: none;"></canvas>
         </div>
-        <div class = "view-area" onclick="close_area()">
-            <p style = "margin: 0 0 10px 10px; padding: 8px; font-weight: bold;">위치 및 영역 관리 <img style = "width:18px; height: 10px;" src = "{% static '이미지스토리/페이지_8/1x/접기.png' %}"></p>
-        </div>
+    {% endif %}
+
+<div style = "margin-bottom: -18px; text-align: left;"> <!--영역 관리 버튼 열고닫기-->
+    <div class = "non-view" onclick = "open_area()">
+        <p style = "margin: 0 0 30px 10px; padding: 8px; font-weight: bold;">위치 및 영역 관리 <img style = "width:18px; height: 10px;" src = "{% static '이미지스토리/페이지_7/1x/열기.png' %}"></p>
     </div>
+    <div class = "view-area" onclick="close_area()">
+        <p style = "margin: 0 0 10px 10px; padding: 8px; font-weight: bold;">위치 및 영역 관리 <img style = "width:18px; height: 10px;" src = "{% static '이미지스토리/페이지_8/1x/접기.png' %}"></p>
+    </div>
+</div>
+
+
 
     <div class = "view-area" style = "text-align:center; padding: 10px 0px 5px 0px;"> <!--영역 숨기기 & 전체보기 & 루트 수정삭제-->
+        {% if get_board.image %}
+            <input class="btn btn-togray fonta" id="see_all" type="button" value="영역 숨기기" onclick="see_all();">
+            <!-- Extra large modal -->
+            <button type="button" class="btn btn-togray fonta" data-toggle="modal" data-target=".bd-example-modal-xl">전체화면</button>
 
-        <input class="btn btn-togray fonta" id="see_all" type="button" value="영역 숨기기" onclick="see_all();">
-        <!-- Extra large modal -->
-        <button type="button" class="btn btn-togray fonta" data-toggle="modal" data-target=".bd-example-modal-xl">전체화면</button>
-
-        <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
+            <div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <img width="100%" style="margin:auto;" src="{{get_board.image.url}}"></img>
                 </div>
-                <img width="100%" style="margin:auto;" src="{{get_board.image.url}}"></img>
             </div>
-        </div>
-        </div>
-        
-            <div style = "margin-top: 10px;"> <!-- 루트 및 수정 삭제-->
+
+            </div>
+        {% endif %}
+            
+        <div style = "margin-top: 10px;"> <!-- 루트 및 수정 삭제-->
                 <div style="margin-bottom: 10px;">
-                    <!-- 루트가 아닐 경우! -->
-                    <!-- 게시글 작성자 그리고 루트 게시글 작성자만이 수정 및 삭제가 가능하다! -->
-                    {% if get_board.post_root.author %}
-                        <!-- 게시글을 삭제할 수 있는 권한은 게시자이면서 권한이 있을 경우 -->
-                        {% if user.profile == get_board.author and user.profile in get_board.post_root.group.all or get_board.post_root.author == user.profile or user.is_superuser %}
-                        <a class="btn btn-togray fonta" href="{% url 'board:root_modify' get_board.category.board_name get_board.id %}">현재위치 수정</a>
-                        
-                        <form style="display: contents;" onsubmit="return delete_root();" action="{% url 'board:root_delete' get_board.category.board_name get_board.id %}" method='post' name='del_root'>
-                            {% csrf_token %}
-                            <input class="btn btn-togray fonta" type="submit" value="현재위치 삭제">
-                        </form>
-                        {% endif %}
-                    {%else%}
-                    <!-- 루트넣는 곳에 루트가 있을 경우!(즉, 게시글이 루트 일 경우) -->
-                    <!-- 게시글 작성자만 수정 및 삭제가 가능하다! -->
-                        {% if user.profile == get_board.author or user.is_superuser %}
-                        <a class="btn btn-togray fonta" href="{% url 'board:root_modify' get_board.category.board_name get_board.id %}">현재위치 수정</a>
-                        <form style="display: contents;" onsubmit="return delete_root();" action="{% url 'board:root_delete' get_board.category.board_name get_board.id %}" method='post' name='del_root'>
-                            {% csrf_token %}
-                            <input class="btn btn-togray fonta" type="submit" value="현재 위치 삭제">
-                        </form>
-                        {% endif %}
+                <!-- 루트가 아닐 경우! -->
+                <!-- 게시글 작성자 그리고 루트 게시글 작성자만이 수정 및 삭제가 가능하다! -->
+                {% if get_board.post_root.author %}
+                    <!-- 게시글을 삭제할 수 있는 권한은 게시자이면서 권한이 있을 경우 -->
+                    {% if user.profile == get_board.author and user.profile in get_board.post_root.group.all or get_board.post_root.author == user.profile or user.is_superuser %}
+                    <a class="btn btn-togray fonta" href="{% url 'board:root_modify' get_board.category.board_name get_board.id %}">현재위치 수정</a>
+                    
+                    <form style="display: contents;" onsubmit="return delete_root();" action="{% url 'board:root_delete' get_board.category.board_name get_board.id %}" method='post' name='del_root'>
+                        {% csrf_token %}
+                        <input class="btn btn-togray fonta" type="submit" value="현재위치 삭제">
+                    </form>
                     {% endif %}
-                    </div>
-                
+                {%else%}
+                <!-- 루트넣는 곳에 루트가 있을 경우!(즉, 게시글이 루트 일 경우) -->
+                <!-- 게시글 작성자만 수정 및 삭제가 가능하다! -->
+                    {% if user.profile == get_board.author or user.is_superuser %}
+                    <a class="btn btn-togray fonta" href="{% url 'board:root_modify' get_board.category.board_name get_board.id %}">현재위치 수정</a>
+                    <form style="display: contents;" onsubmit="return delete_root();" action="{% url 'board:root_delete' get_board.category.board_name get_board.id %}" method='post' name='del_root'>
+                        {% csrf_token %}
+                        <input class="btn btn-togray fonta" type="submit" value="현재 위치 삭제">
+                    </form>
+                    {% endif %}
+                {% endif %}
+                </div>
+            
+                <p>
+                    <input class="custom-select fonta" style="text-align: center;width: 140px;" id="search_input" type="search" name="search" list="search_list" placeholder="특정영역" autocomplete="off" onchange="search_select();"/>
+                    <datalist id="search_list">
+                        {% for i in search_board %}
+                        <option data-value="{{i.id}}" value="{{i.title}}"> {{i.show_all_node}}{{i.title}}</option>
+                        {% endfor %}
+                    </datalist>
+            
+                    <input class="custom-select fonta" style="text-align: center; width: 140px;" id="find_input" type="search" name="search" list="find_list" placeholder="현재영역" autocomplete="off" onchange="find_select();"/>
+                    <datalist id="find_list">
+                        <!-- 정렬하는 함수를 특정 class에 만들어서 사용 -->
+                        {% for i in find_input %}
+                            {% if i.secure == 'public' %}
+                                <option data-value="{{i.id}}" value="{{i.title}}"></option>
+                            {% else %}
+                                <option data-value="{{i.id}}" value="{{i.title}}"></option>
+                            {% endif %}
+                        {% endfor %}
+                    </datalist>
+                </p>
+            
+                <!-- 경로 보여주기 -->
+                {% if get_board.post %}
+                <p><input id="" type="button" value="📌경로확인" onclick="route_show(this);"></input></p>
+                {% endif %}
+            
+            
+                <!-- 지금까지 온 경로를 알기 위해서 넣기 -->
+                <div id="route" style="display: none;">
+                {% if get_board.post %}
                     <p>
-                        <input class="custom-select fonta" style="text-align: center;width: 140px;" id="search_input" type="search" name="search" list="search_list" placeholder="특정영역" autocomplete="off" onchange="search_select();"/>
-                        <datalist id="search_list">
-                            {% for i in search_board %}
-                            <option data-value="{{i.id}}" value="{{i.title}}"> {{i.show_all_node}}{{i.title}}</option>
-                            {% endfor %}
-                        </datalist>
-                
-                        <input class="custom-select fonta" style="text-align: center; width: 140px;" id="find_input" type="search" name="search" list="find_list" placeholder="현재영역" autocomplete="off" onchange="find_select();"/>
-                        <datalist id="find_list">
-                            <!-- 정렬하는 함수를 특정 class에 만들어서 사용 -->
-                            {% for i in find_input %}
-                                {% if i.secure == 'public' %}
-                                    <option data-value="{{i.id}}" value="{{i.title}}"></option>
-                                {% else %}
-                                    <option data-value="{{i.id}}" value="{{i.title}}"></option>
-                                {% endif %}
-                            {% endfor %}
-                        </datalist>
+                    {% include "route.html" %} > 🔹{{get_board.title}}
                     </p>
-                
-                    <!-- 경로 보여주기 -->
-                    {% if get_board.post %}
-                    <p><input id="" type="button" value="📌경로확인" onclick="route_show(this);"></input></p>
+                {% endif %}
+                </div>
+            
+                {% if get_board.post %}
+                    {% if get_board.author.nickname != get_board.post_root.author.nickname %}
+                    <!-- 협력자의 아이디를 알 수 있도록 하기 위해서 설정 -->
+                    <div style="text-align:center;"><span class="badge badge-pill badge-light">🤼작성자 : {% if get_board.author.nickname %}{{get_board.author.nickname}}{% else %}탈퇴회원{% endif %}</span></div>
                     {% endif %}
-                
-                
-                    <!-- 지금까지 온 경로를 알기 위해서 넣기 -->
-                    <div id="route" style="display: none;">
-                    {% if get_board.post %}
-                        <p>
-                        {% include "route.html" %} > 🔹{{get_board.title}}
-                        </p>
-                    {% endif %}
-                    </div>
-                
-                    {% if get_board.post %}
-                        {% if get_board.author.nickname != get_board.post_root.author.nickname %}
-                        <!-- 협력자의 아이디를 알 수 있도록 하기 위해서 설정 -->
-                        <div style="text-align:center;"><span class="badge badge-pill badge-light">🤼작성자 : {% if get_board.author.nickname %}{{get_board.author.nickname}}{% else %}탈퇴회원{% endif %}</span></div>
-                        {% endif %}
-                    {% endif %}
-            </div>
+                {% endif %}
+        </div>
 
         <!-- 추가랑 수정만 할 수 있도록 (추후에는 관리자는 전부 가능하게 만들 것) -->
         <!-- 루트넣는 곳에 루트가 있을 경우!(즉, 게시글이 루트가 아닐 경우) -->
         <!-- 나중에 get_board.post_root.author == user.profile 어차피 모든 권한이 있어서 굳이 필요가 없음 -->
+        {% if get_board.image %}
         {% if get_board.post_root.author %}
             {% if user.profile in get_board.post_root.group.all or get_board.post_root.author == user.profile %}
             <p class = "">
@@ -845,11 +850,12 @@ function close_area(){
             </p>
             {% endif %}
         {% endif %}
+        {% endif %}
 
     </div>
 
  
-
+    {% if get_board.image %}
     {% if get_board.post_root.author %}
         {% if user.profile in get_board.post_root.group.all or get_board.post_root.author == user.profile %}
         <div>
