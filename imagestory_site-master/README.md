@@ -3,8 +3,8 @@
 이미지에 이야기를 남기고, 그 때의 기억을 회상 시킬 수 있는 서비스!
 
 <h3 align="center">[[홈페이지]]</h3>
-<p>
-<img align="center" alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example1.PNG?raw=true"/>
+<p align="center">
+<img alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example1.PNG?raw=true"/>
 </p>
 
 <h3 align="center">[[회원가입]]</h3>
