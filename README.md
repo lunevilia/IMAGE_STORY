@@ -20,7 +20,7 @@
 <p align="center">
 <img alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example4.PNG?raw=true"/>
 </p>
-</br></hr>
+</br><hr color = "lightgray"; align = "center">
    
    
    
