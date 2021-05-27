@@ -8,7 +8,7 @@
 <p align="center">
 <img alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example2.PNG?raw=true"/>
 </p>
-</br><hr width = "50%"; color = "lightgray"; align = "center">
+</br><hr width = "50%"; color = "lightgray"; text-align = "center">
 
 <h3 align="center">[[글 예제]]</h3>
 <p align="center">
