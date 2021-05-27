@@ -8,38 +8,29 @@
 </p>
 
 <h3 align="center">[[회원가입]]</h3>
-<p>
-<img align="center" alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example3.PNG?raw=true"/>
+<p align="center">
+<img alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example3.PNG?raw=true"/>
 </p>
 
 <h3 align="center">[[글 예시1]]</h3>
-<p>
-<img align="center" alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example2.PNG?raw=true"/>
+<p  align="center">
+<img alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example2.PNG?raw=true"/>
 </p>
 
 <h3 align="center">[[글 예시2]]</h3>
-<p>
-<img align="center" alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example4.PNG?raw=true"/>
+<p align="center">
+<img alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example4.PNG?raw=true"/>
 </p>
 
 ## 서비스 주소
 **주소 :**<br>
-https://www.imagestory.shop/
+http://ghostofsea.pythonanywhere.com/
 <br><br>
 **이미지스토리 서비스 설명 및 튜토리얼 :**<br>
-https://www.imagestory.shop/tutorial/
+http://ghostofsea.pythonanywhere.com/tutorial/
+## 서브개발자
 
-## 개발자
-
-**👤 이창우**
-
-- Github : https://github.com/cwadven
-- Backend : Django
-- Service : SQLite, Pythonanywhere
-- Server : Pythonanywhere 호스팅<br>(2020-11-05 : Hacker/월 5천원.. DB Mysql할 경우 2만원 훌쩍 ㅠㅠ 그래서 SQLite로 유지중...)
-- 기술스택 : Django, JQuery, Imagemapster(오픈라이브러리 : http://www.outsharked.com/imagemapster/)
 - 개발기간 : <br>
-    - 2020년 6월 29일 ~ 2020 8월 9일 (필수 기능 완성 / 하루에 2시간 씩)
     - 2020년 8월 9일 ~ 지금 (필요에 따른 유지보수)
 
 ## 환경 구축
