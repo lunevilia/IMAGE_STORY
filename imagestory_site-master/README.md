@@ -4,22 +4,22 @@
 
 <h3 align="center">[[홈페이지]]</h3>
 <p>
-<img alt="imagestory" src="https://github.com/cwadven/imagestory_site/blob/master/asset/imagestory_page.png?raw=true"/>
+<img alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example1.PNG?raw=true"/>
 </p>
 
-<h3 align="center">[[글 목록]]</h3>
+<h3 align="center">[[회원가입]]</h3>
 <p>
-<img alt="imagestory" src="https://github.com/cwadven/imagestory_site/blob/master/asset/imagestory_example2.png?raw=true"/>
+<img alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example3.PNG?raw=true"/>
 </p>
 
-<h3 align="center">[[글 예제]]</h3>
+<h3 align="center">[[글 예시1]]</h3>
 <p>
-<img alt="imagestory" src="https://github.com/cwadven/imagestory_site/blob/master/asset/imagestory_example1.png?raw=true"/>
+<img alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example2.PNG?raw=true"/>
 </p>
 
-<h3 align="center">[[마이페이지]]</h3>
+<h3 align="center">[[글 예시2]]</h3>
 <p>
-<img alt="imagestory" src="https://github.com/cwadven/imagestory_site/blob/master/asset/imagestory_example3.png?raw=true"/>
+<img alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example4.PNG?raw=true"/>
 </p>
 
 ## 서비스 주소
