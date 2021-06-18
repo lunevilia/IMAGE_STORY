@@ -2,8 +2,8 @@
 
 이미지에 이야기를 남기고, 그 때의 기억을 회상 시킬 수 있는 서비스!
 
-개발 프레임워크 : Django
-언어 : Python
+<p>개발 프레임워크 : Django </p>
+<p>언어 : Python </p>
 
 <h3 align="center">[[홈페이지]]</h3>
 <p align="center">
