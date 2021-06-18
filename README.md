@@ -41,8 +41,9 @@ http://ghostofsea.pythonanywhere.com/tutorial/
 
 ## 팀원
 기획자 : 연진욱
-개발자 : 이창우, 고가영
-디자인 : 
+개발자 : 이창우
+개발자 : 고가영
+디자인 : 신승미
 
 
 ## 환경 구축
