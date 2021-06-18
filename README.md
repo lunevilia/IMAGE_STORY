@@ -2,6 +2,9 @@
 
 이미지에 이야기를 남기고, 그 때의 기억을 회상 시킬 수 있는 서비스!
 
+개발 프레임워크 : Django
+언어 : Python
+
 <h3 align="center">[[홈페이지]]</h3>
 <p align="center">
 <img alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example1.PNG?raw=true"/>
@@ -35,6 +38,11 @@ http://ghostofsea.pythonanywhere.com/
 <br><br>
 **이미지스토리 서비스 설명 및 튜토리얼 :**<br>
 http://ghostofsea.pythonanywhere.com/tutorial/
+
+## 팀원
+기획자 : 연진욱
+개발자 : 이창우, 고가영
+디자인 : 
 
 
 ## 환경 구축
