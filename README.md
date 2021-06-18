@@ -40,10 +40,13 @@ http://ghostofsea.pythonanywhere.com/
 http://ghostofsea.pythonanywhere.com/tutorial/
 
 ## 팀원
-기획자 : 연진욱
-개발자 : 이창우
-개발자 : 고가영
-디자인 : 신승미
+<p>기획자 : 연진욱 </p>
+<p>개발자 : 이창우 </p>
+<p>개발자 : 고가영 </p>
+<p>디자인 : 신승미 </p>
+
+
+
 
 
 ## 환경 구축
