@@ -4,19 +4,19 @@
 </p>
 </br><hr width = "50%"; color = "lightgray";>
 
-<h3 align="center">[[글 목록]]</h3>
+<h3 align="center">[[글 예제]]</h3>
 <p align="center">
 <img alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example2.PNG?raw=true"/>
 </p>
 </br><hr width = "50%"; color = "lightgray";>
 
-<h3 align="center">[[글 예제]]</h3>
+<h3 align="center">[[로그인]]</h3>
 <p align="center">
 <img alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example3.PNG?raw=true"/>
 </p>
 </br><hr width = "50%"; color = "lightgray";>
 
-<h3 align="center">[[마이페이지]]</h3>
+<h3 align="center">[[글 예제2]]</h3>
 <p align="center">
 <img alt="imagestory" src="https://github.com/lunevilia/IMAGE_STORY/blob/main/imagestory_site-master/asset/imagestory_example4.PNG?raw=true"/>
 </p>
