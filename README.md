@@ -39,14 +39,6 @@ http://ghostofsea.pythonanywhere.com/
 **이미지스토리 서비스 설명 및 튜토리얼 :**<br>
 http://ghostofsea.pythonanywhere.com/tutorial/
 
-## 팀원
-<p>기획자 : 연진욱 </p>
-<p>개발자 : 이창우 </p>
-<p>개발자 : 고가영 </p>
-<p>디자인 : 신승미 </p>
-
-
-
 
 
 ## 환경 구축
